@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Сборник тезисов УОМШ-24";
+    var letters = new[]
+    {
+        new { Title = "Тезисы УОМШ-24. Том 1", File = "/files/Skeet_C-in-Depth_RuLit_Me_670099.pdf" },
+        new { Title = "Тезисы УОМШ-24. Том 2", File = "/files/Skeet_C-in-Depth_RuLit_Me_670099.pdf" },
+    };
+}
+
+<h2 class="mt-4 mb-3">Сборник тезисов УОМШ-24</h2>
+
+<div class="card p-4 shadow-sm">
+    <ul>
+        @foreach (var item in letters)
+        {
+            <li><a href="@item.File" target="_blank">@item.Title</a></li>
+        }
+    </ul>
+</div>

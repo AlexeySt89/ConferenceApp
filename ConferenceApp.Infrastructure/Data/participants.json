@@ -1,0 +1,23 @@
+[
+  {
+    "Id": "EB7DB251-771E-467B-83BD-8BB271A04C85",
+    "FullName": "Иванов Иван Иванович",
+    "Organization": "МГУ",
+    "Email": "ivanov@example.com",
+    "TitleLecture": "Swaga"
+  },
+  {
+    "Id": "EB7DB251-771E-467B-83BD-8BB271A04C85",
+    "FullName": "Петрова Анна Сергеевна",
+    "Organization": "СПбГУ",
+    "Email": "petrova@example.com",
+    "TitleLecture": "Imeetsa"
+  },
+  {
+    "Id": "EB7DB251-771E-467B-83BD-8BB271A04C85",
+    "FullName": "Смирнов Алексей",
+    "Organization": "УрФУ",
+    "Email": "smirnov@example.com",
+    "TitleLecture":  "Nasvay"
+  }
+]

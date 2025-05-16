@@ -1,0 +1,25 @@
+﻿@model List<ConferenceApp.Domain.Entities.Participant>
+
+<h2>Участники конференции</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ФИО</th>
+            <th>Название доклада</th>
+            <th>Организация</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.FullName</td>
+                <td>@p.TitleLecture</td>
+                <td>@p.Organization</td>
+                <td>@p.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>

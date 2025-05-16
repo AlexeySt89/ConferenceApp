@@ -1,0 +1,25 @@
+﻿@model List<ConferenceApp.Application.DTOs.ConferenceDto>
+
+@{
+    ViewData["Title"] = "Конференции";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Конференции</h1>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var conf in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">@conf.Title</h5>
+                        <p class="card-text">@conf.Description</p>
+                        <p class="card-text"><small class="text-muted">Дата: @conf.Date.ToString("D")</small></p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

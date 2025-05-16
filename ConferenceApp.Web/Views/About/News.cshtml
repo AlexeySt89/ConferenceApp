@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Новости";
+    var letters = new[]
+    {
+        new { Title = "Информационное письмо 1", File = "/files/Skeet_C-in-Depth_RuLit_Me_670099.pdf" },
+        new { Title = "Информационное письмо 2", File = "/files/Skeet_C-in-Depth_RuLit_Me_670099.pdf" },
+        new { Title = "Информационное письмо 3", File = "/files/Skeet_C-in-Depth_RuLit_Me_670099.pdf" },
+        new { Title = "Информационное письмо 4", File = "/files/Skeet_C-in-Depth_RuLit_Me_670099.pdf" }
+    };
+}
+
+<h2 class="mt-4 mb-3">Новости</h2>
+
+<div class="card p-4 shadow-sm">
+    <ul>
+        @foreach (var item in letters)
+        {
+            <li><a href="@item.File" target="_blank">@item.Title</a></li>
+        }
+    </ul>
+</div>

@@ -1,0 +1,35 @@
+﻿@model ConferenceApp.Web.Views.Participants.RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<h2>Подача заявки</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <div>
+        <label>ФИО:</label>
+        <input asp-for="Input.FullName" />
+    </div>
+    <div>
+        <label>Email:</label>
+        <input asp-for="Input.Email" />
+    </div>
+    <div>
+        <label>Пароль:</label>
+        <input asp-for="Input.Password" type="password" />
+    </div>
+    <div>
+        <label>Тема доклада:</label>
+        <input asp-for="Input.TitleLecture" />
+    </div>
+    <div>
+        <label>Файл:</label>
+        <input asp-for="File" type="file" />
+    </div>
+    <button type="submit">Отправить</button>
+</form>
+
+@if (Model.Message != null)
+{
+    <p>@Model.Message</p>
+}

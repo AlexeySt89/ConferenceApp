@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Архив";
+}
+
+<h2 class="mb-3">Архив</h2>
+
+<h4>Программа секций</h4>
+<ul>
+    <li><a href="/files/archive/program_2020.pdf" target="_blank">УОМШ-2020 Программа конференции</a></li>
+    <li><a href="/files/archive/program_2021.pdf" target="_blank">УОМШ-2021 Программа конференции</a></li>
+    <li><a href="/files/archive/program_2022.pdf" target="_blank">УОМШ-2022 Программа конференции</a></li>
+    <li><a href="/files/archive/program_2023.pdf" target="_blank">УОМШ-2023 Программа конференции</a></li>
+    <li><a href="/files/archive/annotations_1.pdf" target="_blank">Аннотация Часть 1</a></li>
+    <li><a href="/files/archive/annotations_2.pdf" target="_blank">Аннотация Часть 2</a></li>
+</ul>
+
+<div class="accordion mt-4" id="archiveAccordion">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingReports2020">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReports2020">
+                Доклады участников конференции 2020
+            </button>
+        </h2>
+        <div id="collapseReports2020" class="accordion-collapse collapse" data-bs-parent="#archiveAccordion">
+            <div class="accordion-body">
+                <a href="/files/archive/reports_2020.pdf" target="_blank">Скачать</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingReports2022">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReports2022">
+                Доклады участников конференции 2022
+            </button>
+        </h2>
+        <div id="collapseReports2022" class="accordion-collapse collapse" data-bs-parent="#archiveAccordion">
+            <div class="accordion-body">
+                <a href="/files/archive/reports_2022.pdf" target="_blank">Скачать</a>
+            </div>
+        </div>
+    </div>
+
+    @for (int year = 2020; year <= 2023; year++)
+    {
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingAccepted@year">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAccepted@year">
+                    Принятые заявки в @year
+                </button>
+            </h2>
+            <div id="collapseAccepted@year" class="accordion-collapse collapse" data-bs-parent="#archiveAccordion">
+                <div class="accordion-body">
+                    <a href="/files/archive/accepted_.pdf" target="_blank">Скачать</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

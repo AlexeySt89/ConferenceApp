@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Программа конференции";
+    var letters = new[]
+    {
+        new { Title = "Программа конференции УОМШ-24", File = "/files/Skeet_C-in-Depth_RuLit_Me_670099.pdf" }
+    };
+}
+
+<div class="card p-4 shadow-sm">
+    <ul>
+        @foreach (var item in letters)
+        {
+            <li><a href="@item.File" target="_blank">@item.Title</a></li>
+        }
+    </ul>
+</div>

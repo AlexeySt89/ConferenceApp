@@ -1,0 +1,23 @@
+﻿@model List<ConferenceApp.Domain.Entities.ParOrgComm>
+@{
+    ViewData["Title"] = "Организационный  комитет";
+}
+
+<h2 class="mt-4 mb-3">Организационный  комитет</h2>
+
+@foreach (var member in Model)
+{
+    <div class="card mb-3 p-3 shadow-sm">
+        <div class="d-flex">
+            <div class="me-3">
+                <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
+            </div>
+            <div>
+                <div class="fw-semibold">@member.Pos</div>
+                <div class="fs-5">@member.FullName</div>
+                <div>@member.Affiliation</div>
+                <div class="text-muted">@member.Role</div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Материалы прошлых конференций";
+    var materials = new[]
+    {
+        new { Title = "Сборник докладов 2023", File = "/files/Skeet_C-in-Depth_RuLit_Me_670099.pdf" },
+        new { Title = "Сборник докладов 2022", File = "/files/Skeet_C-in-Depth_RuLit_Me_670099.pdf" },
+        new { Title = "Сборник докладов 2021", File = "/files/Skeet_C-in-Depth_RuLit_Me_670099.pdf" }
+    };
+}
+
+<h2 class="mt-4 mb-3">Материалы прошлых конференций</h2>
+
+<div class="card p-4 shadow-sm">
+    <ul>
+        @foreach (var item in materials)
+        {
+            <li><a href="@item.File" target="_blank">@item.Title</a></li>
+        }
+    </ul>
+</div>
