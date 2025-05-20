@@ -1,5 +1,6 @@
 ﻿using ConferenceApp.Domain.Entities;
 using ConferenceApp.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace ConferenceApp.Infrastructure.Repositories
@@ -8,6 +9,10 @@ namespace ConferenceApp.Infrastructure.Repositories
     {
         private readonly string _filePath = Path.Combine(AppContext.BaseDirectory, "Data", "participants.json");
         private List<Participant> _cache;
+
+        private readonly AppDbContext _appDbContext;
+
+        public ParticipantRepository(AppDbContext appDbContext) => _appDbContext = appDbContext;
 
         public ParticipantRepository()
         {
@@ -32,11 +37,11 @@ namespace ConferenceApp.Infrastructure.Repositories
 
             return _cache ?? new List<Participant>();
         }
-        public Task<Participant?> GetByCredentialsAsync(string email, string password)
-        {
-            var user = _cache.FirstOrDefault(u => u.Email == email && u.Password == password);
-            return Task.FromResult(user);
-        }
+        public async Task<Participant?> GetByCredentialsAsync(string email) =>
+            await _appDbContext.Participants.FirstOrDefaultAsync(p => p.Email == email);
+         // for json
+         //var user = _cache.FirstOrDefault(u => u.Email == email && u.Password == password);
+         //return Task.FromResult(user);
 
         public Task UpdateAsync(string email, Participant updatedPart)
         {
@@ -49,11 +54,15 @@ namespace ConferenceApp.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public Task SaveAsync(Participant participant)
+        public async Task SaveAsync(Participant participant)
         {
-            _cache.Add(participant);
-            SaveToFile();
-            return Task.CompletedTask;
+
+            _appDbContext.Participants.Add(participant);
+            await _appDbContext.SaveChangesAsync();
+            // for json
+            //_cache.Add(participant);
+            //SaveToFile();
+            //return Task.CompletedTask;
         }
 
         private void SaveToFile()

@@ -16,18 +16,22 @@ namespace ConferenceApp.Application.Services
 
         public async Task<ParticipantDto?> AuthenticateAsync(string email, string password)
         {
-            var participant = await _repository.GetByCredentialsAsync(email, password);
+            var participant = await _repository.GetByCredentialsAsync(email);
             if (participant == null)
                 return null;
 
-            return new ParticipantDto
+            if(BCrypt.Net.BCrypt.Verify(password, participant.Password))
             {
-                FullName = participant.FullName,
-                Email = participant.Email,
-                Organization = participant.Organization,
-                TitleLecture = participant.TitleLecture,
-                FilePath = participant.FilePath
-            };
+                return new ParticipantDto
+                {
+                    FullName = participant.FullName,
+                    Email = participant.Email,
+                    Organization = participant.Organization,
+                    TitleLecture = participant.TitleLecture,
+                    FilePath = participant.FilePath
+                };
+            }
+            return null;
         }
 
         public List<Participant> GetParticipants()
@@ -35,8 +39,11 @@ namespace ConferenceApp.Application.Services
             return _repository.GetAll();
         }
 
-        public async Task SubmitAsync(ParticipantDto dto)
+        public async Task<bool> SubmitAsync(ParticipantDto dto)
         {
+            if (await _repository.GetByCredentialsAsync(dto.Email) is not null)
+                return false;
+
             Participant newPart = new Participant()
             {
                 Id = Guid.NewGuid(),
@@ -49,6 +56,7 @@ namespace ConferenceApp.Application.Services
             };
 
             await _repository.SaveAsync(newPart);
+            return true;
         }
 
         public async Task UpdateAsync(string email, ParticipantDto updateDto)
