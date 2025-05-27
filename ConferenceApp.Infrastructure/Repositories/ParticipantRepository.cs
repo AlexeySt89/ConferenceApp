@@ -27,7 +27,7 @@ namespace ConferenceApp.Infrastructure.Repositories
             }
         }
 
-        public List<Participant> GetAll()
+        public async Task<List<Participant>> GetAll()
         {
             /*var json = File.ReadAllText(_filePath);
             var participants = JsonSerializer.Deserialize<List<Participant>>(json, new JsonSerializerOptions
@@ -35,7 +35,10 @@ namespace ConferenceApp.Infrastructure.Repositories
                 PropertyNameCaseInsensitive = true
             });*/
 
-            return _cache ?? new List<Participant>();
+            if(_appDbContext.Participants is not null)
+                return await _appDbContext.Participants.ToListAsync();
+            else
+                return _appDbContext.Participants.ToList() ?? new List<Participant>();
         }
         public async Task<Participant?> GetByCredentialsAsync(string email) =>
             await _appDbContext.Participants.FirstOrDefaultAsync(p => p.Email == email);

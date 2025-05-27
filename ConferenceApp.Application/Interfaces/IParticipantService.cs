@@ -10,7 +10,7 @@ namespace ConferenceApp.Application.Interfaces
 {
     public interface IParticipantService
     {
-        List<Participant> GetParticipants();
+        Task<List<Participant>> GetParticipants();
         Task<bool> SubmitAsync(ParticipantDto dto);
         Task<ParticipantDto?> AuthenticateAsync(string email, string password);
         Task UpdateAsync(string email, ParticipantDto updateDto);

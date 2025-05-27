@@ -34,9 +34,9 @@ namespace ConferenceApp.Application.Services
             return null;
         }
 
-        public List<Participant> GetParticipants()
+        public async Task<List<Participant>> GetParticipants()
         {
-            return _repository.GetAll();
+            return await _repository.GetAll();
         }
 
         public async Task<bool> SubmitAsync(ParticipantDto dto)

@@ -26,4 +26,14 @@ public class AuthController : ControllerBase
         else
             return Ok("Authenticated");
     }
+
+    [HttpPost("GetAll")]
+    public async Task<IActionResult> GetAll()
+    {
+        var isValid = await _service.GetParticipants();
+        if (isValid == null)
+            return BadRequest("bazi net");
+        else
+            return Ok(isValid);
+    }
 }
