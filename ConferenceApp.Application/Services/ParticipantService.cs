@@ -28,7 +28,8 @@ namespace ConferenceApp.Application.Services
                     Email = participant.Email,
                     Organization = participant.Organization,
                     TitleLecture = participant.TitleLecture,
-                    FilePath = participant.FilePath
+                    FileContent = participant.ReportFile,
+                    FileName = participant.ReportFileName,
                 };
             }
             return null;
@@ -51,8 +52,9 @@ namespace ConferenceApp.Application.Services
                 Email = dto.Email,
                 Organization = dto.Organization,
                 TitleLecture = dto.TitleLecture,
-                FilePath = dto.FilePath,
-                Password = new Random().Next().ToString() //Сделать норм пароли и реализацию хэша
+                Password = new Random().Next().ToString(), //Сделать норм пароли и реализацию хэша
+                ReportFile = dto.FileContent,
+                ReportFileName = dto.FileName
             };
 
             await _repository.SaveAsync(newPart);
@@ -68,8 +70,9 @@ namespace ConferenceApp.Application.Services
                 Email = updateDto.Email,
                 Organization = updateDto.Organization,
                 TitleLecture = updateDto.TitleLecture,
-                FilePath = updateDto.FilePath,
-                Password = new Random().Next().ToString() //Сделать норм пароли и реализацию хэша
+                Password = new Random().Next().ToString(), //Сделать норм пароли и реализацию хэша
+                ReportFile = updateDto.FileContent,
+                ReportFileName = updateDto.FileName
             };
 
             await _repository.UpdateAsync(email, newPart);

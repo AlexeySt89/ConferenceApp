@@ -10,11 +10,29 @@ public class AuthController : ControllerBase
     public AuthController(ParticipantService service) => _service = service;
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(ParticipantDto dto)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Register([FromForm] RegisterParticipantRequest request)
     {
+        if(request.File == null || request.File.Length == 0)
+            return BadRequest("Файл не прикреплён.");
+
+        using var memoryStream = new MemoryStream();
+        await request.File.CopyToAsync(memoryStream);
+
+        var dto = new ParticipantDto
+        {
+            FullName = request.Name,
+            Organization = request.Organization,
+            TitleLecture = request.TitleLecture,
+            Email = request.Email,
+            Password = request.Password,
+            FileContent = memoryStream.ToArray(),
+            FileName = request.File.FileName
+        };
+
         var result = await _service.SubmitAsync(dto);
-        if (!result) return BadRequest("Email already registered");
-        return Ok("Registered successfully");
+        if (!result) return BadRequest("Такой email уже используется.");
+        return Ok("Участник зарегистрирован.");
     }
 
     [HttpPost("login")]
@@ -36,4 +54,16 @@ public class AuthController : ControllerBase
         else
             return Ok(isValid);
     }
+
+    /*[HttpGet("download/{id}")] // для скачивания докладов по id
+    public async Task<IActionResult> DownloadReport(Guid id)
+    {
+        var participant = await _service.GetByIdAsync(id);
+        if (participant == null || participant.FileContent == null || participant.FileName == null)
+            return NotFound("Файл не найден.");
+
+        return File(participant.FileContent, "application/octet-stream", participant.FileName);
+    }
+    */
+
 }

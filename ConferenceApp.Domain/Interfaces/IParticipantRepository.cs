@@ -8,5 +8,6 @@ namespace ConferenceApp.Domain.Interfaces
         Task<Participant?> GetByCredentialsAsync(string email);
         Task SaveAsync(Participant participant);
         Task UpdateAsync(string email, Participant participant);
+        Task GetFileByIdAsync(Guid id);
     }
 }

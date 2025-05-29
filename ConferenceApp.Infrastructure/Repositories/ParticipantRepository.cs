@@ -73,5 +73,10 @@ namespace ConferenceApp.Infrastructure.Repositories
             var json = JsonSerializer.Serialize(_cache, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(_filePath, json);
         }
+
+        public Task GetFileByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
