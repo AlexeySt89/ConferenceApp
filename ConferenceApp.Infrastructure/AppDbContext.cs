@@ -8,6 +8,7 @@ namespace ConferenceApp.Infrastructure
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<Participant> Participants => Set<Participant>();
+        public DbSet<Admin> Admins => Set<Admin>();
         public DbSet<Conference> Conferences { get; set; }
     }
 }

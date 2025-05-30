@@ -45,16 +45,6 @@ public class AuthController : ControllerBase
             return Ok("Authenticated");
     }
 
-    [HttpPost("GetAll")]
-    public async Task<IActionResult> GetAll()
-    {
-        var isValid = await _service.GetParticipants();
-        if (isValid == null)
-            return BadRequest("bazi net");
-        else
-            return Ok(isValid);
-    }
-
     /*[HttpGet("download/{id}")] // для скачивания докладов по id
     public async Task<IActionResult> DownloadReport(Guid id)
     {

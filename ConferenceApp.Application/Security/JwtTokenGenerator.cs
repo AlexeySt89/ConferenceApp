@@ -1,7 +1,8 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
 using System.Text;
 
-public class JwtTokenGenerator //: IJwtTokenGenerator
+public class JwtTokenGenerato// : IJwtTokenGenerator
 {
     /*private readonly IConfiguration _configuration;
 
