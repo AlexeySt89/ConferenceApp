@@ -22,26 +22,35 @@ namespace ConferenceApp.WebAPI
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=conference.db"));
 
             builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
-            builder.Services.AddScoped<ParticipantService>(); 
-           /* builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(opt =>
-                    {
-                        var config = builder.Configuration;
-                        opt.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = config["JwtSettings:Issuer"],
-                            ValidAudience = config["JwtSettings:Audience"],
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!))
-                        };
-                    });
+            builder.Services.AddScoped<ParticipantService>();
+            /* builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                     .AddJwtBearer(opt =>
+                     {
+                         var config = builder.Configuration;
+                         opt.TokenValidationParameters = new TokenValidationParameters
+                         {
+                             ValidateIssuer = true,
+                             ValidateAudience = true,
+                             ValidateLifetime = true,
+                             ValidateIssuerSigningKey = true,
+                             ValidIssuer = config["JwtSettings:Issuer"],
+                             ValidAudience = config["JwtSettings:Audience"],
+                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!))
+                         };
+                     });
 
-            builder.Services.AddAuthorization();
-            builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();*/
-
+             builder.Services.AddAuthorization();
+             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();*/
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+            });
 
             var app = builder.Build();
 
@@ -55,7 +64,7 @@ namespace ConferenceApp.WebAPI
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.UseCors();
 
             app.MapControllers();
 
