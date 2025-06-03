@@ -1,4 +1,5 @@
-﻿using ConferenceApp.Infrastructure;
+﻿using ConferenceApp.Application.Interfaces;
+using ConferenceApp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ConferenceApp.WebAPI.Controllers
@@ -7,16 +8,10 @@ namespace ConferenceApp.WebAPI.Controllers
     [Route("api/admin")]
     public class AdminController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IJwtTokenGenerator _tokenGenerator;
+        private readonly IAdminService _service;
+        public AdminController(IAdminService adminService) => _service = adminService;
 
-        public AdminController(AppDbContext context, IJwtTokenGenerator tokenGenerator)
-        {
-            _context = context;
-            _tokenGenerator = tokenGenerator;
-        }
-
-       /* [HttpPost("login")]
+        /*[HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] AdminLoginDto dto)
         {
             var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == dto.Email);
@@ -27,16 +22,26 @@ namespace ConferenceApp.WebAPI.Controllers
 
             var token = _tokenGenerator.GenerateToken(admin.Email, "Admin");
             return Ok(new { token });
-        }
+        }*/
 
-        [HttpPost("GetAll")]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var isValid = await _service.GetParticipants();
-            if (isValid == null)
+            var listPar = await _service.GetAllPar();
+            if (listPar == null)
                 return BadRequest("bazi net");
             else
-                return Ok(isValid);
-        }*/
+                return Ok(listPar);
+        }
+
+        [HttpDelete("Remove")]
+        public async Task<IActionResult> Remove(string email)
+        {
+            var isValid = await _service.Remove(email);
+            if (isValid == false)
+                return BadRequest("такого типа нет");
+            else
+                return Ok("все четко");
+        }
     }
 }

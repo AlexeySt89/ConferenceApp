@@ -1,4 +1,5 @@
 
+using ConferenceApp.Application.Interfaces;
 using ConferenceApp.Application.Services;
 using ConferenceApp.Domain.Interfaces;
 using ConferenceApp.Infrastructure;
@@ -23,6 +24,8 @@ namespace ConferenceApp.WebAPI
 
             builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
             builder.Services.AddScoped<ParticipantService>();
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
             /* builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                      .AddJwtBearer(opt =>
                      {
