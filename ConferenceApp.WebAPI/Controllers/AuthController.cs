@@ -8,6 +8,7 @@ public class AuthController : ControllerBase
 {
     private readonly ParticipantService _service;
     public AuthController(ParticipantService service) => _service = service;
+    public static Dictionary<string, string> UserTokens = new Dictionary<string, string>();
 
     [HttpPost("register")]
     [Consumes("multipart/form-data")]
@@ -31,18 +32,34 @@ public class AuthController : ControllerBase
         };
 
         var result = await _service.SubmitAsync(dto);
-        if (!result) return BadRequest("Такой email уже используется.");
-        return Ok("Участник зарегистрирован.");
+        if (!result) 
+            return BadRequest("Такой email уже используется.");
+
+        // Генерация простого токена (временная заглушка)
+        var token = Guid.NewGuid().ToString();
+
+        // Сохраняем "токен" в памяти
+        UserTokens[request.Email] = token;
+
+        // Пропускаем реальную обработку файла для упрощения
+        return Ok(new { Token = token, Message = "Участник зарегистрирован." });
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] ParticipantDto dto)
     {
-        var isValid = await _service.AuthenticateAsync(dto.Email, dto.Password);
+        /*var isValid = await _service.AuthenticateAsync(dto.Email, dto.Password);
         if (isValid == null)
             return Unauthorized("Invalid credentials");
         else
-            return Ok("Authenticated");
+            return Ok("Authenticated");*/
+        // Упрощенная проверка - любой пароль считается верным
+        if (UserTokens.TryGetValue(dto.Email, out var token))
+        {
+            return Ok(new { Token = token });
+        }
+
+        return Unauthorized("Пользователь не найден");
     }
 
     /*[HttpGet("download/{id}")] // для скачивания докладов по id

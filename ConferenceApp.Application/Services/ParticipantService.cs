@@ -2,6 +2,8 @@
 using ConferenceApp.Application.Interfaces;
 using ConferenceApp.Domain.Entities;
 using ConferenceApp.Domain.Interfaces;
+using System.Security.Claims;
+using System.Text;
 
 namespace ConferenceApp.Application.Services
 {
@@ -77,5 +79,26 @@ namespace ConferenceApp.Application.Services
 
             await _repository.UpdateAsync(email, newPart);
         }
+
+        /*public string GenerateJwtToken(string email)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Sub, email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(3),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }*/
     }
 }
