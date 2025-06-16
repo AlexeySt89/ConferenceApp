@@ -40,11 +40,21 @@ namespace ConferenceApp.Infrastructure.Repositories
             else
                 return _appDbContext.Participants.ToList() ?? new List<Participant>();
         }
+        public async Task<List<Participant>> GetApprovedPar()
+        {
+
+            if (_appDbContext.Participants is not null)
+                return await _appDbContext.Participants.Where(p => p.IsApproved == true).ToListAsync();
+            else
+                return _appDbContext.Participants.ToList() ?? new List<Participant>();
+        }
+        public async Task<Participant?> GetByCredentialsAsync(Guid id) =>
+            await _appDbContext.Participants.FirstOrDefaultAsync(p => p.Id == id);
         public async Task<Participant?> GetByCredentialsAsync(string email) =>
             await _appDbContext.Participants.FirstOrDefaultAsync(p => p.Email == email);
-         // for json
-         //var user = _cache.FirstOrDefault(u => u.Email == email && u.Password == password);
-         //return Task.FromResult(user);
+        // for json
+        //var user = _cache.FirstOrDefault(u => u.Email == email && u.Password == password);
+        //return Task.FromResult(user);
 
         public Task UpdateAsync(string email, Participant updatedPart)
         {
@@ -56,10 +66,13 @@ namespace ConferenceApp.Infrastructure.Repositories
             }
             return Task.CompletedTask;
         }
-
+        public async Task UpdateAsync(Participant participant)
+        {
+            _appDbContext.Participants.Update(participant);
+            await _appDbContext.SaveChangesAsync();
+        }
         public async Task SaveAsync(Participant participant)
         {
-
             _appDbContext.Participants.Add(participant);
             await _appDbContext.SaveChangesAsync();
             // for json

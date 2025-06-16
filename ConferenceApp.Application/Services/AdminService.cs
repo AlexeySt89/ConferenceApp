@@ -13,6 +13,15 @@ namespace ConferenceApp.Application.Services
         { 
             return await _adminRepository.GetAllPar();
         }
+        public async Task<List<Participant>> GetApprovePar()
+        {
+            return await _adminRepository.GetApprovePar();
+        }
+
+        public async Task<bool> UpdateParStatusAsync(string email, bool status)
+        {
+            return await _adminRepository.UpdateParStatusAsync(email, status);
+        }
 
         public async Task<bool> Remove(string email)
         {

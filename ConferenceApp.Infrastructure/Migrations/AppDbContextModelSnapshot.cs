@@ -15,7 +15,26 @@ namespace ConferenceApp.Infrastructure.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
+
+            modelBuilder.Entity("Admin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Admins");
+                });
 
             modelBuilder.Entity("ConferenceApp.Domain.Entities.Conference", b =>
                 {
@@ -45,6 +64,20 @@ namespace ConferenceApp.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<byte[]>("ApplicationFile")
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("ApplicationFileName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("ArticleFile")
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("ArticleFileName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid?>("ConferenceId")
                         .HasColumnType("TEXT");
 
@@ -56,6 +89,9 @@ namespace ConferenceApp.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool?>("IsApproved")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Organization")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -64,10 +100,11 @@ namespace ConferenceApp.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<byte[]>("ReportFile")
-                        .HasColumnType("BLOB");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.Property<string>("ReportFileName")
+                    b.Property<string>("Section")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

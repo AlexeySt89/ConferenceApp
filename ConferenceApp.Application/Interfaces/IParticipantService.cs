@@ -11,8 +11,9 @@ namespace ConferenceApp.Application.Interfaces
     public interface IParticipantService
     {
         Task<List<Participant>> GetParticipants();
-        Task<bool> SubmitAsync(ParticipantDto dto);
-        Task<ParticipantDto?> AuthenticateAsync(string email, string password);
+        Task<List<Participant>> GetApprovedPar();
+        Task<(bool, string)> SubmitAsync(ParticipantDto dto);
+        Task<(string, string)> AuthenticateAsync(string email, string password);
         Task UpdateAsync(string email, ParticipantDto updateDto);
     }
 }

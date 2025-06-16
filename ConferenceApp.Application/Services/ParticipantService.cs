@@ -16,25 +16,17 @@ namespace ConferenceApp.Application.Services
             _repository = repository;
         }
 
-        public async Task<ParticipantDto?> AuthenticateAsync(string email, string password)
+        public async Task<(string, string)> AuthenticateAsync(string email, string password)
         {
             var participant = await _repository.GetByCredentialsAsync(email);
             if (participant == null)
-                return null;
+                return (string.Empty, string.Empty);
 
             if(BCrypt.Net.BCrypt.Verify(password, participant.Password))
             {
-                return new ParticipantDto
-                {
-                    FullName = participant.FullName,
-                    Email = participant.Email,
-                    Organization = participant.Organization,
-                    TitleLecture = participant.TitleLecture,
-                    FileContent = participant.ReportFile,
-                    FileName = participant.ReportFileName,
-                };
+                return (participant.Email, participant.Id.ToString());
             }
-            return null;
+            return (string.Empty, string.Empty);
         }
 
         public async Task<List<Participant>> GetParticipants()
@@ -42,11 +34,46 @@ namespace ConferenceApp.Application.Services
             return await _repository.GetAll();
         }
 
-        public async Task<bool> SubmitAsync(ParticipantDto dto)
+        public async Task<Participant?> GetParticipant(Guid id)
+        {
+            return await _repository.GetByCredentialsAsync(id);
+        }
+        public async Task<Participant?> GetParticipant(string email)
+        {
+            return await _repository.GetByCredentialsAsync(email);
+        }
+        public async Task<List<Participant?>> GetApprovedPar()
+        {
+            return await _repository.GetApprovedPar();
+        }
+        public async Task<Participant?> EditAsync(string email, ParticipantDto participantDto)
+        {
+            var part = await _repository.GetByCredentialsAsync(email);
+            if(part == null)
+                return null;
+
+            if(!string.IsNullOrEmpty(participantDto.FullName))
+                part.FullName = participantDto.FullName;
+            if (!string.IsNullOrEmpty(participantDto.Email))
+                part.Email = participantDto.Email;
+            if (!string.IsNullOrEmpty(participantDto.Organization))
+                part.Organization = participantDto.Organization;
+            if (!string.IsNullOrEmpty(participantDto.TitleLecture))
+                part.TitleLecture = participantDto.TitleLecture;
+            if (participantDto.ApplicationContent != null)
+                part.ArticleFile = participantDto.ApplicationContent;
+            if (!string.IsNullOrEmpty(participantDto.ApplicationName))
+                part.ArticleFileName = participantDto.ApplicationName;
+
+            await _repository.UpdateAsync(part);
+            return part;
+        }
+
+        public async Task<(bool, string)> SubmitAsync(ParticipantDto dto)
         {
             if (await _repository.GetByCredentialsAsync(dto.Email) is not null)
-                return false;
-
+                return (false, string.Empty);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             Participant newPart = new Participant()
             {
                 Id = Guid.NewGuid(),
@@ -54,13 +81,16 @@ namespace ConferenceApp.Application.Services
                 Email = dto.Email,
                 Organization = dto.Organization,
                 TitleLecture = dto.TitleLecture,
-                Password = new Random().Next().ToString(), //Сделать норм пароли и реализацию хэша
-                ReportFile = dto.FileContent,
-                ReportFileName = dto.FileName
+                Password = hashedPassword,
+                ArticleFile = dto.ApplicationContent,
+                ArticleFileName = dto.ApplicationName,
+                IsApproved = dto.IsApproved,
+                Role = dto.Role,
+                Section = dto.Section
             };
 
             await _repository.SaveAsync(newPart);
-            return true;
+            return (true, newPart.Id.ToString());
         }
 
         public async Task UpdateAsync(string email, ParticipantDto updateDto)
@@ -72,33 +102,13 @@ namespace ConferenceApp.Application.Services
                 Email = updateDto.Email,
                 Organization = updateDto.Organization,
                 TitleLecture = updateDto.TitleLecture,
-                Password = new Random().Next().ToString(), //Сделать норм пароли и реализацию хэша
-                ReportFile = updateDto.FileContent,
-                ReportFileName = updateDto.FileName
+                Password = new Random().Next().ToString(),
+                ArticleFile = updateDto.ApplicationContent,
+                ArticleFileName = updateDto.ApplicationName
             };
 
             await _repository.UpdateAsync(email, newPart);
         }
 
-        /*public string GenerateJwtToken(string email)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-            new Claim(JwtRegisteredClaimNames.Sub, email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddHours(3),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }*/
     }
 }

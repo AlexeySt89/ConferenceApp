@@ -15,6 +15,25 @@ namespace ConferenceApp.Infrastructure.Repositories
             else
                 return new List<Participant>();
         }
+        public async Task<List<Participant>> GetApprovePar()
+        {
+            if (_appDbContext.Participants is not null)
+                return await _appDbContext.Participants.Where(p => p.IsApproved == true).ToListAsync();
+            else
+                return new List<Participant>();
+        }
+
+        public async Task<bool> UpdateParStatusAsync(string email, bool status)
+        {
+            var par = await _appDbContext.Participants.FirstOrDefaultAsync(p => p.Email == email);
+            if (par != null)
+            {
+                par.IsApproved = status;
+                await _appDbContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
 
         public async Task<bool> RemovePar(string email)
         {
