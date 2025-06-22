@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="/styles/admin.css">
+    <title>ММПС. Администратор</title>
+</head>
+<body>
+    <div id="login-form">
+        <h2>Вход</h2>
+        <input type="text" id="username" placeholder="Логин" required>
+        <input type="password" id="password" placeholder="Пароль" required>
+        <button onclick="login()">Войти</button>
+        <p id="error-message" style="color: red;"></p>
+    </div>
+
+    <div id="admin-content">
+        <div class="wrapper">
+            <aside class="sidebar">
+                <div class="sb__logo">
+                    <a href="#header">
+                        <img src="assets/logokrug.png" class="sidebar__logo-img" alt="logo">
+                    </a>
+                </div>
+                <h3>Администратор</h3>
+                <hr>
+                <ul class="sb__nav-ul">
+                    <li><a href="/admin/administrator-edit.html" class="sb__list-element">Редактировать</a></li>
+                    <li><a href="/admin/contentmanage.html" class="sb__list-element">Загрузка контента</a></li>
+                    <li><a href="#news" class="sb__list-element">Новости</a></li>
+                </ul>
+                <div class="exit-btn">
+                    <h4>Выход</h4>
+                </div>
+            </aside>
+
+            <main class="admin-content">
+                    <a href="index.html" target="_blank">На главную</a>
+            </main>
+    
+    <script>
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            // Проверка логина и пароля
+            if (username === 'admin' && password === 'password') {
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
+            } else {
+                errorMessage.textContent = 'Неправильный логин или пароль';
+            }
+        }
+    </script>
+</body>
+</html>

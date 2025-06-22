@@ -1,0 +1,408 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+html {
+  scroll-behavior: smooth;  /*ДЛЯ ПЛАВНОСТИ СКРОЛЛА ПО ЯКОРНЫМ ССЫЛКАМ*/
+}
+
+body {
+    font-family: "Montserrat";
+    margin: 0;
+    display: flex;
+    overflow-x: hidden;
+}
+
+body a{
+    text-decoration: none;
+}
+
+.wrapper{
+    display: flex;
+    min-height: 100vh;
+    min-width: 100vw;
+}
+
+header{
+    transition-duration: 0.5s;
+    border: 1px solid rgb(177, 177, 177);
+    border-radius: 8px;
+    min-height: 60vh;
+    min-width: 100%;    
+    color: #fff;
+    font-weight: 800;
+    background-image: url('images/uunit.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+header:hover{
+    min-height: 80vh;
+    transition-duration: 0.5s;
+}
+
+.header__top-line{
+    width: 100%;
+    max-height: 50px;
+    background-color: #fff;
+    opacity: 0.75;
+    z-index: 3;
+}
+
+.header__title-block{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 25%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    z-index: 2;
+}
+
+.header__title-text{
+    text-align: center;
+    font-size: 25px;
+    font-weight: 800;
+    text-shadow: 4px 4px 4px black;
+}
+
+.header__title-text-2{
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    text-shadow: 4px 4px 4px black;
+}
+
+.header__title-text-3{
+    text-align: center;
+    font-size: 18px;
+    font-weight: 800;
+    text-shadow: 4px 4px 4px black;
+}
+
+.header-buttons-block{
+    display: flex;
+    font-size: 12px;
+    padding: 20px;
+    position: absolute;
+    width: 200px;
+    top: 0;
+    right: 0;
+    /* background-color: blue; */
+    justify-content: space-around;
+}
+
+.header-account{
+    position: relative;
+}
+
+.header-buttons-block img{
+    transition-duration: 0.3s;
+    width: 40px;
+    height: auto;
+}
+
+.header-buttons-block img:hover{
+    transition-duration: 0.3s;
+    width: 45px;
+    height: auto;
+}
+
+.header__account-img{
+    transition-duration: 0.3s;
+    width: 40px;
+    height: auto;
+}
+
+.header__account-dropdown-menu{
+    min-width: 200px;
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #333;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.header__account-dropdown-menu:hover{
+    display: block;
+}
+
+.header__account-dropdown-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.header__account-dropdown-menu li {
+  padding: 15px;
+}
+
+.header__account-dropdown-menu li:hover{
+    background-color: #555;
+    border-radius: 8px;
+}
+
+.header__account-dropdown-menu a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.header__lang-changer select {
+    transition-duration: 0.3s;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    color: #fff;
+    border-radius: 16px;
+    font-size: 16px;
+    background-color: #333;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: relative;
+}
+
+.header__lang-changer select:hover {
+    transition-duration: 0.3s;
+    background-color: #555;
+}
+
+.header__lang-changer select::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border-top: 5px solid black;
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+}
+
+.sidebar{
+    min-width: 280px;
+    /* background-color: #f0f0f0; */
+    background-color: #333;
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.sb__logo{
+    margin: 0 auto;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+
+.sb__nav-ul{
+    list-style: none;
+    padding: 0;
+}
+
+.sb__list-element{
+    transition-duration: 0.5s;
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #333;
+}
+
+.sb__list-element:hover{
+    background-color: #555;
+    font-size: 18px;
+    transition-duration: 0.5s;
+    border-radius: 10px;
+}
+
+.sidebar__logo-img{
+    max-width: 150px;
+    transition-duration: 0.5s;
+}
+
+.sidebar__logo-img:hover{
+    max-width: 200px;
+    transition-duration: 0.5s;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;  /* баг тут */
+}
+
+section {
+    margin-bottom: 40px;
+    padding: 40px;
+}
+
+#about, #program, #organizers, #progcomittee,
+#orgcomittee, #implinks, #orgissues, #registration, #collection, #contacts {
+    min-height: 100vh;
+    /* padding: 20px; */
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+}
+
+p, ul {
+    line-height: 1.6;
+    color: #555;
+}
+
+.grid-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+
+/*КАРТОЧКА ЧЕЛОВЕКА*/
+.card {
+    max-width: 300px;
+    max-height: 350px;
+    border: 1px solid #bdbcbc;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover{
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.image-container {
+    margin-top: 5%;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-container img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.info {
+    width: 100%;
+    height: 50%;
+    padding: 10px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.card-line{
+    border-color: red;
+}
+
+.position {
+    font-size: 14px;
+    color: #777;
+}
+
+.progcomittee h3{
+    text-align: center;
+}
+
+.orgcomittee h3{
+    text-align: center;
+}
+
+/*----------ВАЖНЫЕ ССЫЛКИ----------*/
+
+.links-card{
+    min-width: 200px;
+    border: 1px solid rgb(210, 210, 210);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.links-card:hover{
+    background-color: #e6e6e6;
+    box-shadow: 5px 5px 5px rgb(140, 140, 140);
+    transform: translateY(-2px); /* Легкий подъем при наведении */
+}
+
+/*--------БЛОК РЕГИСТРАЦИИ----------*/
+
+.button-container {
+    text-align: center;
+}
+
+.register-button {
+    background-color: #28a745; /* Зеленый цвет */
+    color: white;
+    font-size: 20px; /* Увеличенный размер шрифта */
+    padding: 15px 30px; /* Увеличенные отступы */
+    border: none;
+    border-radius: 5px; /* Скругленные углы */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s; /* Плавные переходы */
+}
+
+.register-button:hover {
+    background-color: #218838; /* Темнее при наведении */
+    transform: translateY(-3px); /* Легкий подъем при наведении */
+}
+
+.register-button:active {
+    transform: translateY(0); /* Возврат на место при нажатии */
+}
+
+.apply-btn{
+    max-width: 250px;
+    max-height: 70px;
+    background-color: #bdbcbc;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+
+
+/* .about, .program, .organizers, .progcomittee,
+.orgcomittee, .orgissues, .registration, .collection, .contacts{
+    border: 1px solid rgb(217, 217, 217);
+    border-radius: 1%;
+} */
+
+footer{
+    width: 100%;
+    background-color: #cacaca;
+    height: 200px;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+    }
+}

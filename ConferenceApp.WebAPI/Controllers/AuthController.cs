@@ -24,7 +24,7 @@ public class AuthController : ControllerBase
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Register([FromForm] RegisterParticipantRequest request)
     {
-        if(request.File == null || request.File.Length == 0)
+        if (request.File == null || request.File.Length == 0)
             return BadRequest("Файл не прикреплён.");
 
         using var memoryStream = new MemoryStream();

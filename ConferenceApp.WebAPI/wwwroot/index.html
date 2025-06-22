@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ММПС2025</title>
+    <link rel="shortcut icon" href="assets/logo1x1-round-corners.png" type="image/png" />
+    <link rel="stylesheet" href="main.css" />
+    <style>
+        .nav-section-header {
+            padding: 12px 15px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background-color: #f8f9fa;
+            margin-top: 10px;
+            border-left: 3px solid #2196F3;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 10px 15px;
+        }
+
+        .sb__nav-ul {
+            padding-bottom: 15px;
+        }
+
+        .header__account-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+            min-width: 200px;
+            padding: 8px 0;
+            margin-top: 5px;
+        }
+
+            .header__account-dropdown-menu ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .header__account-dropdown-menu li {
+                padding: 0;
+                margin: 0;
+            }
+
+            .header__account-dropdown-menu a {
+                display: block;
+                padding: 10px 20px;
+                color: #333;
+                text-decoration: none;
+                font-size: 14px;
+                transition: all 0.2s ease;
+            }
+
+                .header__account-dropdown-menu a:hover {
+                    background-color: #f5f5f5;
+                    color: #000;
+                }
+
+        #edit-btn, #save-btn, #cancel-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 10px;
+            min-width: 120px;
+        }
+
+        #edit-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+            #edit-btn:hover {
+                background-color: #0b7dda;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+
+        #save-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+            #save-btn:hover {
+                background-color: #3e8e41;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+
+        #cancel-btn {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+            #cancel-btn:hover {
+                background-color: #e0e0e0;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+
+        .register-button {
+            padding: 12px 24px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .register-button:hover {
+                background-color: #0b7dda;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
+        .profile {
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+            .profile h2 {
+                margin-bottom: 20px;
+                color: #333;
+            }
+
+            .profile form div {
+                margin-bottom: 15px;
+            }
+
+            .profile form label {
+                font-weight: 600;
+                color: #444;
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .profile form input,
+            .profile form textarea {
+                font-size: 1em;
+                padding: 10px;
+                width: 100%;
+                max-width: 400px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+
+        #profile-file-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        #profile-file-name {
+            margin-right: 15px;
+            color: #666;
+        }
+
+        #profile-file-input {
+            display: none;
+        }
+
+        .file-upload-btn {
+            padding: 8px 16px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .file-upload-btn:hover {
+                background-color: #e0e0e0;
+            }
+
+        #profile-status {
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            font-size: 14px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .status-approved {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            color: #FF9800;
+            font-weight: 600;
+        }
+
+        .status-rejected {
+            color: #f44336;
+            font-weight: 600;
+        }
+
+        .admin-badge {
+            background-color: #d32f2f;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        #profile-warning {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        /* Обновленные стили для админ-панели */
+        .users-list, .applications-list, .approved-applications-list {
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            max-width: calc(100vw - 300px);
+            box-sizing: border-box;
+        }
+
+        #users-container, #applications-container, #approved-applications-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        #users-table, #applications-table, #approved-applications-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            min-width: 800px;
+        }
+
+            #users-table th, #users-table td,
+            #applications-table th, #applications-table td,
+            #approved-applications-table th, #approved-applications-table td {
+                padding: 10px 12px;
+                text-align: left;
+                border-bottom: 1px solid #e0e0e0;
+                white-space: nowrap;
+                max-width: 250px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            #users-table th, #applications-table th, #approved-applications-table th {
+                background-color: #f8f9fa;
+                font-weight: 600;
+                color: #555;
+                position: sticky;
+                top: 0;
+            }
+
+            #users-table tr:hover, #applications-table tr:hover, #approved-applications-table tr:hover {
+                background-color: #f5f5f5;
+            }
+
+        .action-btn {
+            padding: 5px 8px;
+            margin: 0 2px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .approve-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .reject-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .view-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        /* Стили для блока подачи заявки */
+        .application-section {
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .application-form {
+            margin-top: 20px;
+        }
+
+        .application-file-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .application-file-name {
+            margin-right: 15px;
+            color: #666;
+        }
+
+        .application-submit-btn {
+            padding: 12px 24px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .application-submit-btn:hover {
+                background-color: #0b7dda;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
+        /* Адаптивные стили для мобильных устройств */
+        @media (max-width: 768px) {
+            .users-list, .applications-list, .approved-applications-list {
+                margin: 10px;
+                padding: 10px;
+                max-width: calc(100vw - 40px);
+            }
+
+            #users-table, #applications-table, #approved-applications-table {
+                min-width: 600px;
+            }
+
+                #users-table th, #users-table td,
+                #applications-table th, #applications-table td,
+                #approved-applications-table th, #approved-applications-table td {
+                    padding: 8px 10px;
+                    font-size: 0.9em;
+                }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div class="sb__logo">
+                <a href="#header">
+                    <img src="assets/logokrug.png" class="sidebar__logo-img" alt="logo" />
+                </a>
+            </div>
+            <hr />
+            <ul class="sb__nav-ul">
+                <li class="nav-section-header">УЧАСТНИКАМ</li>
+                <!-- Для обычных пользователей -->
+                <li id="profile-menu-item" style="display:none;">
+                    <a href="#profile" class="sb__list-element">Мой профиль</a>
+                </li>
+                <li id="application-menu-item" style="display:none;">
+                    <a href="#application" class="sb__list-element">Подать заявку</a>
+                </li>
+                <li id="registration-menu-item" style="display:none;">
+                    <a href="#registration" class="sb__list-element">Регистрация</a>
+                </li>
+
+                <!-- Для админа -->
+                <li id="users-list-item" style="display:none;">
+                    <a href="#users-list" class="sb__list-element">Список пользователей</a>
+                </li>
+
+                <li class="nav-divider"></li>
+                <li class="nav-section-header" id="info-section-header">ИНФОРМАЦИЯ</li>
+                <li><a href="#about" class="sb__list-element">О конференции</a></li>
+                <li><a href="#program" class="sb__list-element">Программа</a></li>
+                <li><a href="#progcomittee" class="sb__list-element">Программный комитет</a></li>
+                <li><a href="#orgcomittee" class="sb__list-element">Организационный комитет</a></li>
+                <li><a href="#implinks" class="sb__list-element">Важные ссылки</a></li>
+                <li><a href="#collection" class="sb__list-element">Сборник материалов</a></li>
+                <li><a href="#contacts" class="sb__list-element">Контакты</a></li>
+                <li id="approved-applications-menu-item" style="display:none;">
+                    <a href="#approved-applications" class="sb__list-element">Принятые заявки</a>
+                </li>
+
+                <!-- Раздел для администрирования -->
+                <li class="nav-divider" id="admin-divider" style="display:none;"></li>
+                <li class="nav-section-header" id="admin-section-header" style="display:none;">АДМИНИСТРИРОВАНИЕ</li>
+                <li id="applications-list-item" style="display:none;">
+                    <a href="#applications-list" class="sb__list-element">Список заявок</a>
+                </li>
+            </ul>
+        </aside>
+        <main class="content">
+            <header id="header">
+                <div class="header__title-block">
+                    <h1 class="header__title-text">
+                        XIV Всероссийская молодежная научно-практическая конференция <br />с международным участием
+                    </h1>
+                    <h5 class="header__title-text-3">СФ УУНиТ, 2025</h5>
+                </div>
+                <div class="header-buttons-block">
+                    <div class="header__lang-changer" id="langchanger">
+                        <select name="languages" id="langselect">
+                            <option value="1">RU</option>
+                            <option value="2">EN</option>
+                        </select>
+                    </div>
+                    <div class="header__theme-changer" id="themechanger">
+                        <img src="assets/dark.png" alt="dark_theme_btn" />
+                    </div>
+                    <div class="header__account" id="account" style="position: relative; cursor: pointer;">
+                        <img src="assets/account.png" class="header__account-img" alt="accounticon" />
+                        <div class="header__account-dropdown-menu" id="header__account-dropdown-menu">
+                            <ul id="account-menu-list"></ul>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    document.getElementById('account').onclick = function (e) {
+                        e.stopPropagation();
+                        const dropdownMenu = document.getElementById('header__account-dropdown-menu');
+                        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                    };
+                    document.addEventListener('click', function () {
+                        const dropdownMenu = document.getElementById('header__account-dropdown-menu');
+                        dropdownMenu.style.display = 'none';
+                    });
+                </script>
+            </header>
+
+            <!-- Секция профиля (только для обычных пользователей) -->
+            <section class="profile" id="profile" style="display:none;">
+                <h2>Профиль пользователя</h2>
+                <div id="profile-status"></div>
+                <form id="profile-form" enctype="multipart/form-data">
+                    <div>
+                        <label for="profile-name">Имя:</label><br />
+                        <span class="profile-text" id="profile-name-text"></span>
+                        <input type="text" id="profile-name" name="fullName" style="display:none; width: 300px;" required />
+                    </div>
+                    <div>
+                        <label for="profile-email">Email:</label><br />
+                        <span class="profile-text" id="profile-email-text"></span>
+                        <input type="email" id="profile-email" name="email" style="display:none; width: 300px;" required />
+                    </div>
+                    <div>
+                        <label for="profile-organization">Организация:</label><br />
+                        <span class="profile-text" id="profile-organization-text"></span>
+                        <input type="text" id="profile-organization" name="organization" style="display:none; width: 300px;" required />
+                    </div>
+                    <div>
+                        <label for="profile-titleLecture">Статья:</label><br />
+                        <span class="profile-text" id="profile-titleLecture-text"></span>
+                        <input type="text" id="profile-titleLecture" name="titleLecture" style="display:none; width: 300px;" required />
+                    </div>
+                    <div>
+                        <label>Файл (отчёт, статья и т.п.):</label><br />
+                        <div id="profile-file-container">
+                            <span id="profile-file-name" class="profile-text"></span>
+                            <button type="button" class="file-upload-btn" id="profile-file-btn">Выбрать файл</button>
+                            <input type="file" id="profile-file-input" name="file" style="display:none;" />
+                        </div>
+                    </div>
+                    <br />
+                    <button type="button" id="edit-btn">Редактировать</button>
+                    <button type="submit" id="save-btn" style="display:none;">Сохранить</button>
+                    <button type="button" id="cancel-btn" style="display:none;">Отмена</button>
+                </form>
+            </section>
+
+            <!-- Секция подачи заявки -->
+            <section class="application-section" id="application" style="display:none;">
+                <h2>Подача заявки</h2>
+                <form id="application-form" class="application-form" enctype="multipart/form-data">
+                    <div>
+                        <label>Файл статьи:</label><br />
+                        <div class="application-file-container">
+                            <span id="application-file-name" class="application-file-name">Файл не выбран</span>
+                            <button type="button" class="file-upload-btn" id="application-file-btn">Выбрать файл</button>
+                            <input type="file" id="application-file-input" name="file" style="display:none;" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="application-submit-btn">Отправить заявку</button>
+                </form>
+            </section>
+
+            <!-- Секция списка пользователей (только для админа) -->
+            <section class="users-list" id="users-list" style="display:none;">
+                <h2>Список пользователей</h2>
+                <div id="users-container">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Имя</th>
+                                <th>Email</th>
+                                <th>Организация</th>
+                                <th>Статус</th>
+                                <th>Роль</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Пользователи будут загружаться сюда динамически -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Секция списка заявок (только для админа) -->
+            <section class="applications-list" id="applications-list" style="display:none;">
+                <h2>Список заявок</h2>
+                <div id="applications-container">
+                    <table id="applications-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Имя</th>
+                                <th>Email</th>
+                                <th>Организация</th>
+                                <th>Статья</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applications-table-body">
+                            <!-- Заявки будут загружаться сюда динамически -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Секция принятых заявок (для авторизованных пользователей) -->
+            <section class="approved-applications-list" id="approved-applications" style="display:none;">
+                <h2>Принятые заявки</h2>
+                <div id="approved-applications-container">
+                    <table id="approved-applications-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Имя</th>
+                                <th>Email</th>
+                                <th>Организация</th>
+                                <th>Статья</th>
+                                <th>Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approved-applications-table-body">
+                            <!-- Принятые заявки будут загружаться сюда динамически -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Остальные секции без изменений -->
+            <section class="about" id="about">
+                <h2>О конференции</h2>
+            </section>
+
+            <hr />
+
+            <section class="program" id="program">
+                <h2>Программа конференции</h2>
+                <br>
+                <a href="documents/Program.pdf" download="Program.pdf" target="_blank">Скачать программу конференции</a>
+            </section>
+
+            <hr />
+
+            <section class="progcomittee" id="progcomittee">
+                <h2>Программный комитет</h2>
+            </section>
+
+            <hr />
+
+            <section class="orgcomittee" id="orgcomittee">
+                <h2>Организационный комитет</h2>
+            </section>
+
+            <hr />
+
+            <section class="implinks" id="implinks">
+                <h2>Важные ссылки</h2>
+            </section>
+
+            <hr />
+
+            <section class="registration" id="registration">
+                <h2>Регистрация</h2>
+                <p>
+                    Регистрация заявок на участие в конференции проводится до 10 ноября 2024.
+                    Для участия в работе конференции необходимо зарегистрироваться.
+                </p>
+                <div class="regist-block">
+                    <a href="pages/registration.html" target="_blank">
+                        <div class="button-container">
+                            <button class="register-button">Отправить заявку</button>
+                        </div>
+                    </a>
+                </div>
+                <p style="text-align: center;">
+                    Также можете ознакомиться с требованиями к статье, скачать шаблон заявки участника и образец статьи:
+                </p>
+                <br />
+                <div style="display: flex; justify-content: space-evenly;">
+                    <div class="links-card">
+                        <a href="documents/Program.pdf" download="Program.pdf" target="_blank">Требования к статье</a>
+                        <br />
+                    </div>
+                    <div class="links-card">
+                        <a href="documents/Program.pdf" download="Program.pdf" target="_blank">Шаблон заявки участника</a>
+                        <br />
+                    </div>
+                    <div class="links-card">
+                        <a href="documents/Program.pdf" download="Program.pdf" target="_blank">Образец статьи</a>
+                        <br />
+                    </div>
+                </div>
+                <br />
+                <p style="text-align: center;">
+                    Если у вас возникли проблемы с регистрацией, можете отправить заявку на почту:
+                    <a href="mailto:mmps-struust@yandex.ru">mmps-struust@yandex.ru</a>
+                </p>
+            </section>
+
+            <hr />
+
+            <section class="collection" id="collection">
+                <h2>Сборник материалов</h2>
+                <p>Сборник материалов прошлых конференций, архив</p>
+            </section>
+
+            <hr />
+
+            <section class="contacts" id="contacts">
+                <h2>Контакты</h2>
+            </section>
+
+            <footer>
+                <h3>ПАРТНЕРЫ</h3>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('jwtToken');
+        const profileSection = document.getElementById('profile');
+        const editBtn = document.getElementById('edit-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+
+        const fileNameSpan = document.getElementById('profile-file-name');
+        const fileInput = document.getElementById('profile-file-input');
+        const fileUploadBtn = document.getElementById('profile-file-btn');
+
+        const warningMessage = document.createElement('div');
+        warningMessage.id = 'profile-warning';
+        warningMessage.innerHTML = `
+                                <p>Для просмотра профиля необходимо войти в систему</p>
+                                <a href="pages/signIn.html" style="
+                                    display: inline-block;
+                                    margin-top: 10px;
+                                    padding: 10px 20px;
+                                    background-color: #2196F3;
+                                    color: white;
+                                    text-decoration: none;
+                                    border-radius: 4px;
+                                    transition: background-color 0.2s;
+                                ">Войти</a>
+                            `;
+
+        let currentProfileData = {};
+
+        if (!token) {
+            profileSection.style.display = 'none';
+            profileSection.parentNode.insertBefore(warningMessage, profileSection);
+        } else {
+            warningMessage.style.display = 'none';
+            loadProfileData();
+        }
+
+        function updateAccountMenu() {
+            const token = localStorage.getItem('jwtToken');
+            const userRole = localStorage.getItem('userRole');
+            const isAdmin = userRole === 'admin';
+
+            // Управление отображением пунктов меню
+            document.getElementById('profile-menu-item').style.display = (token && !isAdmin) ? 'list-item' : 'none';
+            document.getElementById('application-menu-item').style.display = (token && !isAdmin) ? 'list-item' : 'none';
+            document.getElementById('registration-menu-item').style.display = !token ? 'list-item' : 'none';
+            document.getElementById('users-list-item').style.display = isAdmin ? 'list-item' : 'none';
+            document.getElementById('admin-divider').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('admin-section-header').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('applications-list-item').style.display = isAdmin ? 'list-item' : 'none';
+            document.getElementById('approved-applications-menu-item').style.display = (token && !isAdmin) ? 'list-item' : 'none';
+
+            // Переименовываем раздел "Информация" для админа
+            document.getElementById('info-section-header').textContent = isAdmin ? 'АДМИНИСТРИРОВАНИЕ' : 'ИНФОРМАЦИЯ';
+
+            // Обновление выпадающего меню
+            const menuList = document.getElementById('account-menu-list');
+            menuList.innerHTML = '';
+
+            if (token) {
+                if (isAdmin) {
+                    menuList.innerHTML = `
+                                <li><a href="#users-list" class="account-menu-link">Список пользователей</a></li>
+                                <li><a href="#applications-list" class="account-menu-link">Список заявок</a></li>
+                                <li><a href="#" class="account-menu-link" onclick="logout()">Выход</a></li>
+                            `;
+                } else {
+                    menuList.innerHTML = `
+                                <li><a href="#profile" class="account-menu-link">Профиль</a></li>
+                                <li><a href="#application" class="account-menu-link">Заявка</a></li>
+                                <li><a href="#" class="account-menu-link" onclick="logout()">Выход</a></li>
+                            `;
+                }
+            } else {
+                menuList.innerHTML = `
+                            <li><a href="pages/signIn.html" class="account-menu-link">Вход</a></li>
+                            <li><a href="pages/registration.html" class="account-menu-link">Регистрация</a></li>
+                        `;
+            }
+        }
+
+        async function loadProfileData() {
+            try {
+                const response = await fetch('https://localhost:7092/api/auth/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+
+                const data = await response.json();
+                currentProfileData = {
+                    fullName: data.fullName || '',
+                    email: data.email || '',
+                    organization: data.organization || '',
+                    titleLecture: data.titleLecture || '',
+                    fileName: data.fileName || '',
+                    isApproved: data.isApproved,
+                    role: data.role || 'user'
+                };
+
+                fillProfileView(currentProfileData);
+
+                if (currentProfileData.role !== 'admin') {
+                    profileSection.style.display = 'block';
+                    document.getElementById('application').style.display = 'block';
+                }
+
+                toggleEditView(false);
+                updateAccountMenu();
+
+                // Если пользователь - админ, загружаем списки
+                if (currentProfileData.role === 'admin') {
+                    loadUsers();
+                    loadApplications();
+                } else if (token) {
+                    loadApprovedApplications();
+                }
+            } catch (err) {
+                alert('Не удалось загрузить профиль. Попробуйте позже.');
+                profileSection.style.display = 'none';
+                warningMessage.style.display = 'block';
+            }
+        }
+
+        function fillProfileView(data) {
+            document.getElementById('profile-name-text').textContent = data.fullName || '';
+            document.getElementById('profile-email-text').textContent = data.email || '';
+            document.getElementById('profile-organization-text').textContent = data.organization || '';
+            document.getElementById('profile-titleLecture-text').textContent = data.titleLecture || '';
+
+            fileNameSpan.textContent = data.fileName || 'Файл не выбран';
+
+            document.getElementById('profile-name').value = data.fullName || '';
+            document.getElementById('profile-email').value = data.email || '';
+            document.getElementById('profile-organization').value = data.organization || '';
+            document.getElementById('profile-titleLecture').value = data.titleLecture || '';
+
+            const statusElement = document.getElementById('profile-status');
+            const statusText = data.isApproved === true ?
+                '<span class="status-approved">Подтверждён</span>' :
+                data.isApproved === false ?
+                    '<span class="status-rejected">Отклонён</span>' :
+                    '<span class="status-pending">На рассмотрении</span>';
+
+            statusElement.innerHTML = `Статус: ${statusText}`;
+
+            selectedFile = null;
+            fileInput.value = null;
+        }
+
+        // Загрузка списка пользователей (для админа)
+        async function loadUsers() {
+            try {
+                const response = await fetch('https://localhost:7092/api/admin/users', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Ошибка при загрузке пользователей');
+                }
+
+                const users = await response.json();
+                const tableBody = document.getElementById('users-table-body');
+                tableBody.innerHTML = '';
+
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+
+                    const statusClass = user.isApproved ? 'status-approved' :
+                        (user.isApproved === false ? 'status-rejected' : 'status-pending');
+                    const statusText = user.isApproved ? 'Подтвержден' :
+                        (user.isApproved === false ? 'Отклонен' : 'На рассмотрении');
+
+                    const roleText = user.role === 'admin' ?
+                        '<span style="color: #d32f2f; font-weight: bold;">Администратор</span>' :
+                        'Пользователь';
+
+                    row.innerHTML = `
+                                <td>${user.fullName || '-'}</td>
+                                <td>${user.email || '-'}</td>
+                                <td>${user.organization || '-'}</td>
+                                <td class="${statusClass}">${statusText}</td>
+                                <td>${roleText}</td>
+                                <td>
+                                    ${user.role !== 'admin' ? `
+                                        <button class="action-btn delete-btn" onclick="deleteUser('${user.email}')">
+                                            Удалить
+                                        </button>
+                                    ` : ''}
+                                </td>
+                            `;
+                    tableBody.appendChild(row);
+                });
+
+                document.getElementById('users-list').style.display = 'block';
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Не удалось загрузить список пользователей');
+            }
+        }
+
+        // Загрузка списка заявок (для админа)
+        async function loadApplications() {
+            try {
+                const response = await fetch('https://localhost:7092/api/admin/applications', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Ошибка при загрузке заявок');
+                }
+
+                const applications = await response.json();
+                const tableBody = document.getElementById('applications-table-body');
+                tableBody.innerHTML = '';
+
+                applications.forEach(app => {
+                    const row = document.createElement('tr');
+
+                    const statusClass = app.isApproved ? 'status-approved' :
+                        (app.isApproved === false ? 'status-rejected' : 'status-pending');
+                    const statusText = app.isApproved ? 'Подтверждена' :
+                        (app.isApproved === false ? 'Отклонена' : 'На рассмотрении');
+
+                    row.innerHTML = `
+                                <td>${app.email || '-'}</td>
+                                <td>${app.fullName || '-'}</td>
+                                <td>${app.email || '-'}</td>
+                                <td>${app.organization || '-'}</td>
+                                <td>${app.titleLecture || '-'}</td>
+                                <td class="${statusClass}">${statusText}</td>
+                                <td>
+                                    ${app.isApproved === null ?
+                            `<button class="action-btn approve-btn" onclick="updateApplicationStatus('${app.email}', true)">
+                                        Принять
+                                     </button>
+                                     <button class="action-btn reject-btn" onclick="updateApplicationStatus('${app.email}', false)">
+                                        Отклонить
+                                     </button>` :
+                            ''}
+                                    <button class="action-btn delete-btn" onclick="deleteParticipant('${app.email}')">
+                                        Удалить
+                                    </button>
+                                </td>
+                            `;
+                    tableBody.appendChild(row);
+                });
+
+                document.getElementById('applications-list').style.display = 'block';
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Не удалось загрузить список заявок');
+            }
+        }
+
+        // Загрузка списка принятых заявок (для пользователей)
+        async function loadApprovedApplications() {
+            try {
+                const response = await fetch('https://localhost:7092/api/auth/applications/approved', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Ошибка при загрузке заявок');
+                }
+
+                const applications = await response.json();
+                const tableBody = document.getElementById('approved-applications-table-body');
+                tableBody.innerHTML = '';
+
+                applications.forEach(app => {
+                    const row = document.createElement('tr');
+
+                    const statusClass = app.isApproved ? 'status-approved' :
+                        (app.isApproved === false ? 'status-rejected' : 'status-pending');
+                    const statusText = app.isApproved ? 'Подтверждена' :
+                        (app.isApproved === false ? 'Отклонена' : 'На рассмотрении');
+
+                    row.innerHTML = `
+                                <td>${app.email || '-'}</td>
+                                <td>${app.fullName || '-'}</td>
+                                <td>${app.email || '-'}</td>
+                                <td>${app.organization || '-'}</td>
+                                <td>${app.titleLecture || '-'}</td>
+                                <td class="${statusClass}">${statusText}</td>
+                            `;
+                    tableBody.appendChild(row);
+                });
+
+                document.getElementById('approved-applications').style.display = 'block';
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Не удалось загрузить список заявок');
+            }
+        }
+
+        // Удаление пользователя (для админа)
+        function deleteUser(email) {
+            if (!confirm(`Вы уверены, что хотите удалить пользователя ${email}?`)) {
+                return;
+            }
+
+            // Реализация удаления пользователя
+            fetch(`https://localhost:7092/api/admin/users/${encodeURIComponent(email)}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Ошибка удаления');
+                    alert('Пользователь успешно удален');
+                    loadUsers();
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Не удалось удалить пользователя');
+                });
+        }
+
+        let editing = false;
+        let selectedFile = null;
+
+        editBtn.addEventListener('click', () => {
+            toggleEditView(true);
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            toggleEditView(false);
+            fillProfileView(currentProfileData);
+            selectedFile = null;
+            fileInput.value = null;
+        });
+
+        fileUploadBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                selectedFile = e.target.files[0];
+                fileNameSpan.textContent = selectedFile.name;
+            } else {
+                selectedFile = null;
+                fileNameSpan.textContent = currentProfileData.fileName || 'Файл не выбран';
+            }
+        });
+
+        function toggleEditView(enable) {
+            editing = enable;
+
+            ['profile-name', 'profile-email', 'profile-organization', 'profile-titleLecture'].forEach(id => {
+                document.getElementById(id).style.display = enable ? 'inline-block' : 'none';
+                document.getElementById(id + '-text').style.display = enable ? 'none' : 'inline-block';
+            });
+
+            fileInput.style.display = 'none'; // Всегда скрываем input type="file"
+            fileUploadBtn.style.display = enable ? 'inline-block' : 'none';
+
+            editBtn.style.display = enable ? 'none' : 'inline-block';
+            saveBtn.style.display = enable ? 'inline-block' : 'none';
+            cancelBtn.style.display = enable ? 'inline-block' : 'none';
+        }
+
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData();
+
+            const fullName = document.getElementById('profile-name').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
+            const organization = document.getElementById('profile-organization').value.trim();
+            const titleLecture = document.getElementById('profile-titleLecture').value.trim();
+
+            if (!fullName || !email || !organization || !titleLecture) {
+                alert('Пожалуйста, заполните все поля.');
+                return;
+            }
+
+            formData.append('fullName', fullName);
+            formData.append('email', email);
+            formData.append('organization', organization);
+            formData.append('titleLecture', titleLecture);
+            if (selectedFile) formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch('https://localhost:7092/api/auth/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+
+                const updatedData = await response.json();
+
+                currentProfileData = {
+                    fullName: updatedData.fullName || fullName,
+                    email: updatedData.email || email,
+                    organization: updatedData.organization || organization,
+                    titleLecture: updatedData.titleLecture || titleLecture,
+                    fileName: updatedData.fileName || (selectedFile ? selectedFile.name : currentProfileData.fileName),
+                    isApproved: updatedData.isApproved || currentProfileData.isApproved,
+                    role: updatedData.role || currentProfileData.role
+                };
+
+                fillProfileView(currentProfileData);
+                toggleEditView(false);
+                alert('Профиль успешно обновлён.');
+            } catch (err) {
+                alert('Ошибка при обновлении профиля. Попробуйте позже.');
+            }
+        });
+
+        // Обработчик для формы подачи заявки
+        document.getElementById('application-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('application-file-input');
+            if (fileInput.files.length === 0) {
+                alert('Пожалуйста, выберите файл статьи');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('https://localhost:7092/api/applications', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+
+                alert('Заявка успешно отправлена на рассмотрение');
+                loadProfileData(); // Обновляем данные профиля
+            } catch (err) {
+                alert('Ошибка при отправке заявки. Попробуйте позже.');
+            }
+        });
+
+        // Обработчик для кнопки выбора файла в форме заявки
+        document.getElementById('application-file-btn').addEventListener('click', () => {
+            document.getElementById('application-file-input').click();
+        });
+
+        document.getElementById('application-file-input').addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                document.getElementById('application-file-name').textContent = e.target.files[0].name;
+            } else {
+                document.getElementById('application-file-name').textContent = 'Файл не выбран';
+            }
+        });
+
+        // Обновление статуса заявки
+        async function updateApplicationStatus(email, isApproved) {
+            if (!confirm(`Вы уверены, что хотите ${isApproved ? 'принять' : 'отклонить'} эту заявку?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://localhost:7092/api/admin/applications/${encodeURIComponent(email)}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ isApproved })
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Ошибка при обновлении статуса');
+                }
+
+                alert('Статус заявки успешно обновлен');
+                loadApplications();
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Не удалось обновить статус заявки');
+            }
+        }
+
+        function deleteParticipant(email) {
+            if (!confirm(`Вы уверены, что хотите удалить участника ${email}?`)) {
+                return;
+            }
+
+            fetch(`https://localhost:7092/api/admin/applications/${encodeURIComponent(email)}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Ошибка удаления');
+                    alert('Участник успешно удален');
+                    loadApplications();
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Не удалось удалить участника');
+                });
+        }
+
+        function logout() {
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('userRole');
+            updateAccountMenu();
+            location.href = 'index.html';
+        }
+
+        // Обработчик изменения хэша в URL для отображения нужной секции
+        window.addEventListener('hashchange', function () {
+            const userRole = localStorage.getItem('userRole');
+            const token = localStorage.getItem('jwtToken');
+
+            if (window.location.hash === '#users-list' && userRole === 'admin') {
+                document.getElementById('users-list').style.display = 'block';
+                loadUsers();
+            }
+            else if (window.location.hash === '#applications-list' && userRole === 'admin') {
+                document.getElementById('applications-list').style.display = 'block';
+                loadApplications();
+            }
+            else if (window.location.hash === '#profile' && userRole !== 'admin') {
+                document.getElementById('profile').style.display = 'block';
+            }
+            else if (window.location.hash === '#application' && userRole !== 'admin') {
+                document.getElementById('application').style.display = 'block';
+            }
+            else if (window.location.hash === '#approved-applications' && token && userRole !== 'admin') {
+                document.getElementById('approved-applications').style.display = 'block';
+                loadApprovedApplications();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', updateAccountMenu);
+    </script>
+</body>
+</html>

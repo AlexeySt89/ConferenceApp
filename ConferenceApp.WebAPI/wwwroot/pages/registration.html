@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../assets/logo1x1-round-corners.png" type="image/png">
+    <link rel="stylesheet" href="../styles/registration.css">
+    <title>Регистрация</title>
+</head>
+<body>
+    <div class="registration-form">
+        <h2>Регистрация</h2>
+        <form id="register-form">
+            <label for="fullName">ФИО:</label>
+            <input type="text" id="fullName" name="FullName" required>
+
+            <label for="organization">Организация:</label>
+            <input type="text" id="organization" name="Organization" required>
+
+            <label for="titleLecture">Тема статьи:</label>
+            <input type="text" id="titleLecture" name="TitleLecture" required>
+
+            <label for="email">Почта:</label>
+            <input type="email" id="email" name="Email" required>
+
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="Password" required>
+
+            <label for="section">Секция:</label>
+            <input type="text" id="secion" name="Section" required>
+
+            <label for="file">Файл заявки участника:</label>
+            <input type="file" id="file" name="File" required>
+
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData();
+            const form = event.target;
+
+            // Добавляем все текстовые поля
+            formData.append('FullName', form.FullName.value);
+            formData.append('Organization', form.Organization.value);
+            formData.append('TitleLecture', form.TitleLecture.value);
+            formData.append('Email', form.Email.value);
+            formData.append('Password', form.Password.value);
+            formData.append('Section', form.Section.value);
+
+            // Добавляем файл
+            if (form.File.files[0]) {
+                formData.append('File', form.File.files[0]);
+            }
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    body: formData
+                    // Не устанавливаем Content-Type - браузер сам добавит с boundary
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Сохраняем токен и данные пользователя
+                    localStorage.setItem('jwtToken', result.token);
+                    localStorage.setItem('userEmail', result.email);
+                    localStorage.setItem('userRole', result.role || 'user');
+
+                    // Перенаправляем с небольшой задержкой
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 100);
+                } else {
+                    throw new Error(result.message || 'Ошибка регистрации');
+                }
+            } catch (error) {
+                console.error('Ошибка регистрации:', error);
+                alert(error.message || 'Произошла ошибка при регистрации');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="admin.css">
+    <title>Администратор</title>
+</head>
+<body>
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div class="sb__logo">
+                <a href="administrator.html">
+                    <img src="assets/logokrug.png" class="sidebar__logo-img" alt="logo">
+                </a>
+            </div>
+            <h3>Администратор</h3>
+            <hr>
+            <ul class="sb__nav-ul">
+                <li><a href="#edit" class="sb__list-element">Редактировать</a></li>
+                <li><a href="#contentupdate" class="sb__list-element">Управление разделами</a></li>                    
+                <li><a href="#news" class="sb__list-element">Новости</a></li>
+            </ul>
+            <div class="exit-btn">
+                <div class="exit-btn-block">
+                    <h4>Выход</h4>
+                </div>
+            </div>
+        </aside>
+
+        <main class="admedit-content">
+            <div id="header">
+                <h1>Редактировать</h1>    
+            </div>
+
+            <div class="admin-edit-content">
+                <div class="edit-container">
+                    <section class="edit-confname">
+                        <h4>Название конференции</h4>
+                        <div class="conf-name">
+                            <input type="text" id="textInput" class="styled-input" placeholder="Всероссийская молодежная научно-практическая конференция" />
+                        </div>
+                    </section>
+
+                    <div class="save-btn">
+                        <p>Сохранить</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+</body>
+</html>
