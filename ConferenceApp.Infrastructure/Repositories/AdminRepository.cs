@@ -46,5 +46,14 @@ namespace ConferenceApp.Infrastructure.Repositories
             }
             return false;
         }
+
+        public async Task<Participant> GetPar(string email)
+        {
+            var par = await _appDbContext.Participants.FirstOrDefaultAsync(p => p.Email == email);
+            if (par != null)
+                return par;
+            else
+                return null;
+        }
     }
 }

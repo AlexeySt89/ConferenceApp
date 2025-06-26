@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Простой текстовый редактор</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  #toolbar {
+    margin-bottom: 10px;
+  }
+  #toolbar button {
+    font-size: 16px;
+    padding: 5px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  #editor {
+    border: 1px solid #ccc;
+    min-height: 300px;
+    padding: 10px;
+    font-size: 16px;
+    outline: none;
+    white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+
+<h2>Простой текстовый редактор</h2>
+
+<div id="toolbar">
+  <button type="button" onclick="formatText('bold')" title="Жирный (Ctrl+B)"><b>Ж</b></button>
+  <button type="button" onclick="formatText('italic')" title="Курсив (Ctrl+I)"><i>К</i></button>
+  <button type="button" onclick="formatText('underline')" title="Подчёркнутый (Ctrl+U)"><u>Ч</u></button>
+  <button type="button" onclick="formatText('strikeThrough')" title="Зачёркнутый">abc</button>
+  <button type="button" onclick="formatText('undo')" title="Отменить (Ctrl+Z)">↺</button>
+  <button type="button" onclick="formatText('redo')" title="Повторить (Ctrl+Y)">↻</button>
+  <!-- Кнопки выравнивания -->
+  <button type="button" onclick="formatText('justifyLeft')" title="Выравнивание по левому краю">↞</button>
+  <button type="button" onclick="formatText('justifyCenter')" title="Выравнивание по центру">↔</button>
+  <button type="button" onclick="formatText('justifyRight')" title="Выравнивание по правому краю">↠</button>
+  <button type="button" onclick="formatText('justifyFull')" title="Выравнивание по ширине">↔↔</button>
+  <!-- Кнопка для маркированного списка -->
+  <button type="button" onclick="formatText('insertUnorderedList')" title="Маркированный список">• Список</button>
+</div>
+
+<div id="editor" contenteditable="true" spellcheck="true">
+  Введите здесь текст...
+</div>
+
+<script>
+  function formatText(command) {
+    document.execCommand(command, false, null);
+    // Чтобы фокус оставался в редакторе
+    document.getElementById('editor').focus();
+  }
+
+  // Чтобы placeholder исчезал при фокусе
+  const editor = document.getElementById('editor');
+  editor.addEventListener('focus', () => {
+    if (editor.textContent.trim() === 'Введите здесь текст...') {
+      editor.textContent = '';
+    }
+  });
+  editor.addEventListener('blur', () => {
+    if (editor.textContent.trim() === '') {
+      editor.textContent = 'Введите здесь текст...';
+    }
+  });
+</script>
+
+</body>
+</html>

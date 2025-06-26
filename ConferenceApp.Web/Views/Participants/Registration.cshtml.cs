@@ -44,7 +44,7 @@ namespace ConferenceApp.Web.Views.Participants
                 }
             }
 
-            Input.FilePath = savedPath;
+            //Input.FilePath = savedPath;
             await _service.SubmitAsync(Input);
             Message = "Заявка подана!";
             return Page();

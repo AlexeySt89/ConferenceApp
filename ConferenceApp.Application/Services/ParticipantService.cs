@@ -60,10 +60,10 @@ namespace ConferenceApp.Application.Services
                 part.Organization = participantDto.Organization;
             if (!string.IsNullOrEmpty(participantDto.TitleLecture))
                 part.TitleLecture = participantDto.TitleLecture;
-            if (participantDto.ApplicationContent != null)
-                part.ArticleFile = participantDto.ApplicationContent;
-            if (!string.IsNullOrEmpty(participantDto.ApplicationName))
-                part.ArticleFileName = participantDto.ApplicationName;
+            if (participantDto.ApplicationFile != null)
+                part.ArticleFile = participantDto.ApplicationFile;
+            if (!string.IsNullOrEmpty(participantDto.ApplicationFileName))
+                part.ArticleFileName = participantDto.ApplicationFileName;
 
             await _repository.UpdateAsync(part);
             return part;
@@ -82,8 +82,8 @@ namespace ConferenceApp.Application.Services
                 Organization = dto.Organization,
                 TitleLecture = dto.TitleLecture,
                 Password = hashedPassword,
-                ArticleFile = dto.ApplicationContent,
-                ArticleFileName = dto.ApplicationName,
+                ArticleFile = dto.ApplicationFile,
+                ArticleFileName = dto.ApplicationFileName,
                 IsApproved = dto.IsApproved,
                 Role = dto.Role,
                 Section = dto.Section
@@ -103,12 +103,53 @@ namespace ConferenceApp.Application.Services
                 Organization = updateDto.Organization,
                 TitleLecture = updateDto.TitleLecture,
                 Password = new Random().Next().ToString(),
-                ArticleFile = updateDto.ApplicationContent,
-                ArticleFileName = updateDto.ApplicationName
+                ArticleFile = updateDto.ApplicationFile,
+                ArticleFileName = updateDto.ApplicationFileName
             };
 
             await _repository.UpdateAsync(email, newPart);
         }
 
+        public async Task<bool> SubmitApplicationAsync(string email, ParticipantDto participantDto)
+        {
+            var participant = await _repository.GetByCredentialsAsync(email);
+            if (participant == null)
+                return false;
+            
+            participant.ApplicationFile = participantDto.ApplicationFile;
+            participant.ApplicationFileName = participantDto.ApplicationFileName;
+
+            await _repository.UpdateAsync(participant);
+            return true;
+        }
+
+        public async Task<bool> SubmitArticleAsync(string email, ParticipantDto participantDto)
+        {
+            var participant = await _repository.GetByCredentialsAsync(email);
+            if (participant == null)
+                return false;
+
+            participant.ArticleFile = participantDto.ArticleFile;
+            participant.ArticleFileName = participantDto.ArticleFileName;
+
+            await _repository.UpdateAsync(participant);
+            return true;
+        }
+
+        public async Task<bool> SubmitMaterialsAsync(string email, ParticipantDto participantDto)
+        {
+            var participant = await _repository.GetByCredentialsAsync(email);
+            if (participant == null)
+                return false;
+
+            participant.ApplicationFile = participantDto.ApplicationFile;
+            participant.ApplicationFileName = participantDto.ApplicationFileName;
+            participant.ArticleFile = participantDto.ArticleFile;
+            participant.ArticleFileName = participantDto.ArticleFileName;
+            participant.IsApproved = null;
+
+            await _repository.UpdateAsync(participant);
+            return true;
+        }
     }
 }

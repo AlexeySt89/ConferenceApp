@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../assets/logo1x1-round-corners.png" type="image/png">
+    <link rel="stylesheet" href="../styles/registration.css">
+    <title>Регистрация</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .registration-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+            .registration-form h2 {
+                color: #2c3e50;
+                text-align: center;
+                margin-bottom: 25px;
+                font-size: 24px;
+            }
+
+            .registration-form label {
+                display: block;
+                margin-bottom: 8px;
+                color: #34495e;
+                font-weight: 500;
+            }
+
+            .registration-form input {
+                width: 100%;
+                padding: 12px 15px;
+                margin-bottom: 20px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 16px;
+                box-sizing: border-box;
+                transition: border-color 0.3s;
+            }
+
+                .registration-form input:focus {
+                    border-color: #3498db;
+                    outline: none;
+                }
+
+            .registration-form button {
+                width: 100%;
+                padding: 14px;
+                background-color: #3498db;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+                .registration-form button:hover {
+                    background-color: #2980b9;
+                }
+
+        @media (max-width: 600px) {
+            .registration-form {
+                padding: 20px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-form">
+        <h2>Регистрация участника</h2>
+        <form id="register-form">
+            <label for="fullName">ФИО:</label>
+            <input type="text" id="fullName" name="FullName" required placeholder="Иванов Иван Иванович">
+
+            <label for="organization">Организация:</label>
+            <input type="text" id="organization" name="Organization" required placeholder="Университет или компания">
+
+            <label for="titleLecture">Тема статьи (предполагаемая):</label>
+            <input type="text" id="titleLecture" name="TitleLecture" required placeholder="Название вашего доклада">
+
+            <label for="email">Электронная почта:</label>
+            <input type="email" id="email" name="Email" required placeholder="example@domain.com">
+
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="Password" required placeholder="Не менее 6 символов">
+
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = {
+                FullName: form.FullName.value,
+                Organization: form.Organization.value,
+                TitleLecture: form.TitleLecture.value,
+                Email: form.Email.value,
+                Password: form.Password.value
+            };
+
+            try {
+                const response = await fetch('https://localhost:7092/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Сохраняем токен и данные пользователя
+                    localStorage.setItem('jwtToken', result.token);
+                    localStorage.setItem('userEmail', result.email);
+                    localStorage.setItem('userRole', result.role || 'user');
+
+                    // Перенаправляем с небольшой задержкой
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 100);
+                } else {
+                    throw new Error(result.message || 'Ошибка регистрации');
+                }
+            } catch (error) {
+                console.error('Ошибка регистрации:', error);
+                alert(error.message || 'Произошла ошибка при регистрации');
+            }
+        });
+    </script>
+</body>
+</html>

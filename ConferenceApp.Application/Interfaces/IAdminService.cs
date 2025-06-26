@@ -9,5 +9,6 @@ namespace ConferenceApp.Application.Interfaces
         Task<bool> UpdateParStatusAsync(string email, bool status);
         Task<bool> Remove(string email);
         Task<List<Participant>> GetApprovePar();
+        Task<(Stream FileStream, string FileName, string ContentType)> GetParticipantFileAsync(string email, string v);
     }
 }

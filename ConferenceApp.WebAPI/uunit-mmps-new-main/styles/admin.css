@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    font-family: "Montserrat";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #fff;
+    text-decoration: none;
+}
+
+#header{
+    margin: 1%;
+    width: 100%;
+    height: 10%;
+    background-color: #fff;
+}
+
+#header h1{
+    color: #333;
+    font-size: 24px;
+}
+
+.sidebar h3{
+    color: #fff;
+    text-align: center;
+}
+
+.exit-btn{
+    width: 75%;
+    color: #fff;
+    position: absolute;
+    bottom: 0px;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.save-btn{
+    position: absolute;
+    bottom: 0px;
+}
+
+#admin-content {
+    display: none; /* Содержимое скрыто по умолчанию */
+}
+
+#login-form {
+    background: #333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#login-form h2{
+    color:#fff;
+}
+
+#login-form input {
+    margin: 10px 0;
+    padding: 10px;
+    width: 95%;
+    border-radius: 10px;
+}
+
+.edit-container{
+    min-width: 1000px;
+    min-height: 500px;
+    border-radius: 10px;
+    border: 1px solid rgb(134, 134, 134);
+    padding: 25px;
+}
+
+.admin-content{
+    padding: 5%;
+}
+
+.admedit-content{
+    padding: 5%;
+}
+
+.edit-confname{
+    padding: 20px;
+    border: 1px solid rgb(134, 134, 134);
+    border-radius: 10px;
+}
+
+.edit-container input{
+    padding: 10px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+    font-size: 16px;
+    width: 600px;
+}

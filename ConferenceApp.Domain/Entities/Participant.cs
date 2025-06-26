@@ -13,6 +13,7 @@
         public byte[]? ArticleFile { get; set; }
         public string ArticleFileName { get; set; } = string.Empty;
         public bool? IsApproved { get; set; }
+        //public string RejectReason { get; set; } = string.Empty;
         public string Section { get; set; } = string.Empty;
         public string Role { get; set; } // "admin" или "user"
     }

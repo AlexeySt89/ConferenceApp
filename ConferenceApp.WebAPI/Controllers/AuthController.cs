@@ -37,8 +37,8 @@ public class AuthController : ControllerBase
             TitleLecture = request.TitleLecture,
             Email = request.Email,
             Password = request.Password,
-            ApplicationContent = memoryStream.ToArray(),
-            ApplicationName = request.File.FileName,
+            //ApplicationFile = memoryStream.ToArray(),
+            //ApplicationFileName = request.File.FileName,
             IsApproved = null,
             Role = "user",
             Section = request.Section
@@ -48,13 +48,12 @@ public class AuthController : ControllerBase
         if (!result.Item1) 
             return BadRequest("Такой email уже используется.");
 
-        // Получаем созданного участника для получения роли
         var participant = await _participantService.GetParticipant(dto.Email);
 
         var token = _jwtService.GenerateToken(
         email: dto.Email,
         userId: result.Item2,
-        role: participant?.Role ?? "user" // Передаем роль в генератор токена
+        role: participant?.Role ?? "user"
     );
 
         return Ok(new
@@ -120,14 +119,14 @@ public class AuthController : ControllerBase
             Organization = participant.Organization,
             Email = participant.Email,
             TitleLecture = participant.TitleLecture,
-            ApplicationName = participant.ArticleFileName,
+            ApplicationFileName = participant.ArticleFileName,
             IsApproved = participant.IsApproved,
             Role = participant.Role 
         };
 
         return Ok(profileDto);
     }
-    [Authorize]
+    /*[Authorize]
     [HttpPut("profile")]
     public async Task<IActionResult> UpdateProfile([FromBody] ParticipantDto updateDto)
     {
@@ -151,13 +150,46 @@ public class AuthController : ControllerBase
             Organization = updatedParticipant.Organization,
             Email = updatedParticipant.Email,
             TitleLecture = updatedParticipant.TitleLecture,
-            ApplicationName = updatedParticipant.ArticleFileName
+            ApplicationFileName = updatedParticipant.ArticleFileName
         };
 
         return Ok(resultDto);
-    }
-
+    }*/
     [Authorize]
+    [HttpPut("profile")]
+    [Consumes("application/json")] // Изменили на JSON
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateParticipantRequest request)
+    {
+        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (email == null)
+        {
+            return Unauthorized("Некорректный идентификатор пользователя");
+        }
+
+        var dto = new ParticipantDto
+        {
+            FullName = request.FullName,
+            Organization = request.Organization,
+            TitleLecture = request.TitleLecture,
+        };
+
+        var updatedParticipant = await _participantService.EditAsync(email, dto);
+
+        if (updatedParticipant == null)
+        {
+            return NotFound("Пользователь не найден");
+        }
+
+        return Ok(new
+        {
+            updatedParticipant.FullName,
+            updatedParticipant.Email,
+            updatedParticipant.Organization,
+            updatedParticipant.TitleLecture
+        });
+    }
+    /*[Authorize]
     [HttpPut("profile")]
     [Consumes("multipart/form-data")]
     [ApiExplorerSettings(IgnoreApi = true)]
@@ -186,9 +218,7 @@ public class AuthController : ControllerBase
             FullName = request.FullName,
             Organization = request.Organization,
             TitleLecture = request.TitleLecture,
-            Email = email, 
-            ApplicationContent = fileContent,
-            ApplicationName = fileName
+            Email = email
         };
 
         var updatedParticipant = await _participantService.EditAsync(email, dto);
@@ -204,14 +234,13 @@ public class AuthController : ControllerBase
             Organization = updatedParticipant.Organization,
             Email = updatedParticipant.Email,
             TitleLecture = updatedParticipant.TitleLecture,
-            ApplicationName = updatedParticipant.ArticleFileName
+            ApplicationFileName = updatedParticipant.ArticleFileName
         };
 
         return Ok(resultDto);
-    }
+    }*/
 
     [HttpGet("applications/approved")]
-    [Authorize]
     public async Task<IActionResult> GetApprovedApplications()
     {
         // Возвращает только подтвержденные заявки (isApproved = true)
@@ -221,4 +250,115 @@ public class AuthController : ControllerBase
         return Ok(applications);
     }
 
+    #region Submit Material
+    [Authorize]
+    [HttpPost("submit-application")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> SubmitApplication([FromForm] SubmitApplicationRequest request)
+    {
+        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+        if (email == null)
+            return Unauthorized("Некорректный идентификатор пользователя");
+
+        if (request.ApplicationFile == null || request.ApplicationFile.Length == 0)
+            return BadRequest("Файл заявки не прикреплён.");
+
+        using var memoryStream = new MemoryStream();
+        await request.ApplicationFile.CopyToAsync(memoryStream);
+
+        var result = await _participantService.SubmitApplicationAsync(email, new ParticipantDto
+        {
+            ApplicationFile = memoryStream.ToArray(),
+            ApplicationFileName = request.ApplicationFile.FileName
+        });
+
+        if (!result)
+            return BadRequest("Не удалось сохранить заявку");
+
+        return Ok("Файл заявки успешно сохранён");
+    }
+
+    [Authorize]
+    [HttpPost("submit-article")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> SubmitArticle([FromForm] SubmitArticleRequest request)
+    {
+        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+        if (email == null)
+            return Unauthorized("Некорректный идентификатор пользователя");
+
+        if (request.ArticleFile == null || request.ArticleFile.Length == 0)
+            return BadRequest("Файл статьи не прикреплён.");
+
+        using var memoryStream = new MemoryStream();
+        await request.ArticleFile.CopyToAsync(memoryStream);
+
+        var result = await _participantService.SubmitArticleAsync(email, new ParticipantDto
+        {
+            ArticleFile = memoryStream.ToArray(),
+            ArticleFileName = request.ArticleFile.FileName
+        });
+
+        if (!result)
+            return BadRequest("Не удалось сохранить статью");
+
+        return Ok("Файл статьи успешно сохранён");
+    }
+
+    [Authorize]
+    [HttpPost("submitmaterials")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> SubmitMaterials([FromForm] SubmitMaterialsRequest request)
+    {
+        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+        if (email == null)
+            return Unauthorized("Некорректный идентификатор пользователя");
+
+        if (request.ArticleFile == null || request.ArticleFile.Length == 0)
+            return BadRequest("Файл статьи не прикреплён.");
+
+        if (request.ApplicationFile == null || request.ApplicationFile.Length == 0)
+            return BadRequest("Файл заявки не прикреплён.");
+
+        using var articleStream = new MemoryStream();
+        using var applicationStream = new MemoryStream();
+
+        await request.ArticleFile.CopyToAsync(articleStream);
+        await request.ApplicationFile.CopyToAsync(applicationStream);
+
+        var result = await _participantService.SubmitMaterialsAsync(email, new ParticipantDto
+        {
+            ArticleFile = articleStream.ToArray(),
+            ArticleFileName = request.ArticleFile.FileName,
+            ApplicationFile = applicationStream.ToArray(),
+            ApplicationFileName = request.ApplicationFile.FileName
+            
+        });
+
+        if (!result)
+            return BadRequest("Не удалось сохранить материалы");
+
+        return Ok("Материалы успешно сохранены");
+    }
+    #endregion
+    public class SubmitApplicationRequest
+    {
+        public IFormFile ApplicationFile { get; set; }
+        public string ApplicationFileName { get; set; }
+
+    }
+
+    public class SubmitArticleRequest
+    {
+        public IFormFile ArticleFile { get; set; }
+        public string ArticleFileName { get; set; }
+    }
+
+    public class SubmitMaterialsRequest
+    {
+        public IFormFile ArticleFile { get; set; }
+        public string ArticleFileName { get; set; }
+        public IFormFile ApplicationFile { get; set; }
+        public string ApplicationFileName { get; set; }
+    }
 }
