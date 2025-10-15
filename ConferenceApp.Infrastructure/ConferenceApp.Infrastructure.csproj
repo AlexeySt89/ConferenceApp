@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,24 +19,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConferenceApp.Application\ConferenceApp.Application.csproj" />
     <ProjectReference Include="..\ConferenceApp.Domain\ConferenceApp.Domain.csproj" />
   </ItemGroup>
-	
-    <ItemGroup>
-	    <None Update="Data\ParOrgComm.json">
-	      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	    </None>
-	    <None Update="Data\ParProgramComm.json">
-	      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	    </None>
-	    <None Update="Data\participants.json">
-		    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	    </None>
-    </ItemGroup>
 
-
+  <ItemGroup>
+    <None Update="Data\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
