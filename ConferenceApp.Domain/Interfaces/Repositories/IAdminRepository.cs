@@ -1,6 +1,6 @@
 ﻿using ConferenceApp.Domain.Common.ValueObjects;
 
-namespace ConferenceApp.Domain.Interfaces
+namespace ConferenceApp.Domain.Interfaces.Repositories
 {
     public interface IAdminRepository
     {

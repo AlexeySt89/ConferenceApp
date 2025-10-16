@@ -1,7 +1,7 @@
 ﻿using ConferenceApp.Domain.Common.ValueObjects;
 using ConferenceApp.Domain.Entities;
 
-namespace ConferenceApp.Domain.Interfaces
+namespace ConferenceApp.Domain.Interfaces.Repositories
 {
     public interface IParticipantRepository
     {

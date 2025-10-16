@@ -1,6 +1,6 @@
 ﻿using ConferenceApp.Domain.Entities;
 
-namespace ConferenceApp.Domain.Interfaces
+namespace ConferenceApp.Domain.Interfaces.Repositories
 {
     public interface IParProgramCommRepository
     {
