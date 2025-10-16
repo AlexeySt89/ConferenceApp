@@ -1,6 +1,25 @@
-﻿public class Admin
+﻿using ConferenceApp.Domain.Common;
+using ConferenceApp.Domain.Common.ValueObjects;
+
+public class Admin : EntityBase
 {
-    public int Id { get; set; }
-    public string Email { get; set; } = default!;
-    public string PasswordHash { get; set; } = default!;
+    public Email Email { get; private set; }
+    public Password Password { get; private set; } 
+
+    private Admin() { }
+
+    public Admin(Email email, Password password)
+    {
+        Email = email;
+        Password = password;
+    }
+
+    public void ChangePassword(Password newPassword)
+    {
+        Password = newPassword;
+    }
+
+    public bool CanManageParticipants => true;
+    public bool CanManageConferences => true;
+
 }

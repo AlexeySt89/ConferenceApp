@@ -4,6 +4,10 @@ namespace ConferenceApp.Domain.Interfaces
 {
     public interface IParProgramCommRepository
     {
-        List<ParProgramComm> GetAll();
+        Task<IReadOnlyList<ParProgramComm>> GetAllAsync();
+        Task<ParProgramComm?> GetByIdAsync(Guid id);
+        Task AddAsync(ParProgramComm member);
+        Task UpdateAsync(ParProgramComm member);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

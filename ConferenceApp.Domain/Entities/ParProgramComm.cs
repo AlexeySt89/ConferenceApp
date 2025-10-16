@@ -1,11 +1,13 @@
 ﻿namespace ConferenceApp.Domain.Entities
 {
-    public class ParProgramComm
+    public class ParProgramComm : CommitteeMember
     {
-        public Guid Id { get; set; }
-        public string FullName { get; set; } = string.Empty;
-        public string Pos { get; set; } = string.Empty;
-        public string Affiliation { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
+        public ParProgramComm(string fullName, string position, string affiliation, string role = "Program Committee")
+            : base(fullName, position, affiliation, role)
+        {
+
+        }
+
+        private ParProgramComm() { }
     }
 }

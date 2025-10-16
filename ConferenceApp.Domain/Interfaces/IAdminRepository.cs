@@ -1,13 +1,13 @@
-﻿using ConferenceApp.Domain.Entities;
+﻿using ConferenceApp.Domain.Common.ValueObjects;
 
 namespace ConferenceApp.Domain.Interfaces
 {
     public interface IAdminRepository
     {
-        Task<Participant> GetPar(string email);
-        Task<List<Participant>> GetAllPar();
-        Task<List<Participant>> GetApprovePar();
-        Task<bool> UpdateParStatusAsync(string email, bool status);
-        Task<bool> RemovePar(string email);
+        Task<Admin?> GetByEmailAsync(Email email);
+        Task<Admin?> GetByIdAsync(Guid id);
+        Task<bool> ExistsAsync(Email email);
+        Task AddAsync(Admin admin);
+        Task UpdateAsync(Admin admin);
     }
 }
