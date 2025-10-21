@@ -6,5 +6,6 @@ namespace ConferenceApp.Domain.Interfaces.Services
     {
         Task SendConfirmationEmailAsync(Email to, string subject, string body);
         Task SendApprovalNotificationAsync(Email to, string conferenceTitle);
+        Task SendRejectionNotificationAsync(Email to, string participantName, string reason);
     }
 }
