@@ -1,4 +1,4 @@
-﻿namespace ConferenceApp.Application.Conferences.DTOs
+﻿namespace ConferenceApp.Application.Conferences.Queries.GetConferences
 {
     public class ConferenceDto
     {
