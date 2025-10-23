@@ -1,5 +1,6 @@
-﻿using ConferenceApp.Domain.Entities;
-using ConferenceApp.Domain.Interfaces;
+﻿using ConferenceApp.Domain.Common.ValueObjects;
+using ConferenceApp.Domain.Entities;
+using ConferenceApp.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -7,89 +8,82 @@ namespace ConferenceApp.Infrastructure.Repositories
 {
     public class ParticipantRepository : IParticipantRepository
     {
-        private readonly string _filePath = Path.Combine(AppContext.BaseDirectory, "Data", "participants.json");
-        private List<Participant> _cache;
+        private readonly AppDbContext _context;
 
-        private readonly AppDbContext _appDbContext;
+        public ParticipantRepository(AppDbContext appDbContext) => _context = appDbContext;
 
-        public ParticipantRepository(AppDbContext appDbContext) => _appDbContext = appDbContext;
-
-        public ParticipantRepository()
+        public async Task AddAsync(Participant participant)
         {
-            if (File.Exists(Path.Combine(_filePath)))
+            await _context.AddAsync(participant);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            var participant = await GetByIdAsync(id);
+            if(participant == null) 
+                return false;
+
+            _context.Participants.Remove(participant);
+            await _context.SaveChangesAsync();
+            return true;
+
+        }
+
+        public async Task<bool> ExistsAsync(Email email)
+        {
+            return await _context.Participants
+                .AnyAsync(p => p.Email.Value == email.Value);
+        }
+
+        public async Task<IReadOnlyList<Participant>> GetAllAsync()
+        {
+            return await _context.Participants.ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<Participant>> GetApprovedAsync()
+        {
+            return await _context.Participants.Where(x => x.IsApproved == true).ToListAsync();
+        }
+
+        public async Task<Participant?> GetByEmailAsync(Email email)
+        {
+            return await _context.Participants.FirstOrDefaultAsync(x => x.Email.Value == email.Value);
+        }
+
+        public async Task<Participant?> GetByIdAsync(Guid id)
+        {
+            return await _context.Participants.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<IReadOnlyList<Participant>> GetPendingAsync()
+        {
+            return await _context.Participants.Where(p => p.IsApproved == null).ToListAsync();
+        }
+
+        public async Task<bool> UpdateApprovalStatusAsync(Email email, bool isApproved, string? rejectReason = null)
+        {
+            var participant = await GetByEmailAsync(email);
+            if (participant == null)
+                return false;
+
+            if(isApproved)
             {
-                var json = File.ReadAllText(_filePath);
-                _cache = JsonSerializer.Deserialize<List<Participant>>(json) ?? new();
+                participant.Approve();
             }
             else
             {
-                _cache = new List<Participant>();
+                participant.Reject(rejectReason ?? "Reason not specified");
             }
+
+            await UpdateAsync(participant);
+            return true;
         }
 
-        public async Task<List<Participant>> GetAll()
-        {
-            /*var json = File.ReadAllText(_filePath);
-            var participants = JsonSerializer.Deserialize<List<Participant>>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });*/
-
-            if(_appDbContext.Participants is not null)
-                return await _appDbContext.Participants.ToListAsync();
-            else
-                return _appDbContext.Participants.ToList() ?? new List<Participant>();
-        }
-        public async Task<List<Participant>> GetApprovedPar()
-        {
-
-            if (_appDbContext.Participants is not null)
-                return await _appDbContext.Participants.Where(p => p.IsApproved == true).ToListAsync();
-            else
-                return _appDbContext.Participants.ToList() ?? new List<Participant>();
-        }
-        public async Task<Participant?> GetByCredentialsAsync(Guid id) =>
-            await _appDbContext.Participants.FirstOrDefaultAsync(p => p.Id == id);
-        public async Task<Participant?> GetByCredentialsAsync(string email) =>
-            await _appDbContext.Participants.FirstOrDefaultAsync(p => p.Email == email);
-        // for json
-        //var user = _cache.FirstOrDefault(u => u.Email == email && u.Password == password);
-        //return Task.FromResult(user);
-
-        public Task UpdateAsync(string email, Participant updatedPart)
-        {
-            var index = _cache.FindIndex(u => u.Email == email);
-            if (index != -1)
-            {
-                _cache[index] = updatedPart;
-                SaveToFile();
-            }
-            return Task.CompletedTask;
-        }
         public async Task UpdateAsync(Participant participant)
         {
-            _appDbContext.Participants.Update(participant);
-            await _appDbContext.SaveChangesAsync();
-        }
-        public async Task SaveAsync(Participant participant)
-        {
-            _appDbContext.Participants.Add(participant);
-            await _appDbContext.SaveChangesAsync();
-            // for json
-            //_cache.Add(participant);
-            //SaveToFile();
-            //return Task.CompletedTask;
-        }
-
-        private void SaveToFile()
-        {
-            var json = JsonSerializer.Serialize(_cache, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(_filePath, json);
-        }
-
-        public Task GetFileByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
+            _context.Participants.Update(participant);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ConferenceApp.Domain.Entities;
-using ConferenceApp.Domain.Interfaces;
+using ConferenceApp.Domain.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 
@@ -7,23 +8,41 @@ namespace ConferenceApp.Infrastructure.Repositories
 {
     public class ParProgramCommRepository : IParProgramCommRepository
     {
-        private readonly string _filePath;
-        public ParProgramCommRepository()
+        private readonly AppDbContext _context;
+        public ParProgramCommRepository(AppDbContext context) => _context = context;
+
+        public async Task AddAsync(ParProgramComm member)
         {
-            _filePath = Path.Combine(AppContext.BaseDirectory, "Data", "ParProgramComm.json");
+            await _context.ParProgramComms.AddAsync(member);
+            await _context.SaveChangesAsync();
         }
-        public List<ParProgramComm> GetAll()
+
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            if (!File.Exists(_filePath))
-                return new List<ParProgramComm>();
+            var member = await _context.ParProgramComms.FirstOrDefaultAsync(x => x.Id == id);
 
-            var json = File.ReadAllText(_filePath);
-            var participants = JsonSerializer.Deserialize<List<ParProgramComm>>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            if (member == null)
+                return false;
 
-            return participants ?? new List<ParProgramComm>();
+            _context.Remove(member);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<IReadOnlyList<ParProgramComm>> GetAllAsync()
+        {
+            return await _context.ParProgramComms.ToListAsync();
+        }
+
+        public Task<ParProgramComm?> GetByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateAsync(ParProgramComm member)
+        {
+            _context.ParProgramComms.Update(member);
+            await _context.SaveChangesAsync();
         }
     }
 }

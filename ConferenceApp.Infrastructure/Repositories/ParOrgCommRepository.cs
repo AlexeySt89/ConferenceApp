@@ -1,29 +1,46 @@
 ﻿using ConferenceApp.Domain.Entities;
-using ConferenceApp.Domain.Interfaces;
-using System.Text.Json;
-
+using ConferenceApp.Domain.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConferenceApp.Infrastructure.Repositories
 {
     public class ParOrgCommRepository : IParOrgCommRepository
     {
-        private readonly string _filePath;
-        public ParOrgCommRepository()
+        private readonly AppDbContext _context;
+        public ParOrgCommRepository(AppDbContext context) => _context = context;
+
+        public async Task AddAsync(ParOrgComm member)
         {
-            _filePath = Path.Combine(AppContext.BaseDirectory, "Data", "ParOrgComm.json");
+            await _context.ParOrgComms.AddAsync(member);
+            await _context.SaveChangesAsync();
         }
-        public List<ParOrgComm> GetAll()
+
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            if (!File.Exists(_filePath))
-                return new List<ParOrgComm>();
+            var member = await _context.ParOrgComms.FirstOrDefaultAsync(x => x.Id == id);
 
-            var json = File.ReadAllText(_filePath);
-            var participants = JsonSerializer.Deserialize<List<ParOrgComm>>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            if(member == null)
+                return false;
+            
+            _context.Remove(member);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
-            return participants ?? new List<ParOrgComm>();
+        public async Task<IReadOnlyList<ParOrgComm>> GetAllAsync()
+        {
+            return await _context.ParOrgComms.ToListAsync();
+        }
+
+        public Task<ParOrgComm?> GetByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateAsync(ParOrgComm member)
+        {
+            _context.ParOrgComms.Update(member);
+            await _context.SaveChangesAsync();
         }
     }
 }
