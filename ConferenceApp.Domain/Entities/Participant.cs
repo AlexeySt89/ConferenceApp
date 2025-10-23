@@ -18,8 +18,8 @@ namespace ConferenceApp.Domain.Entities
         public bool? IsApproved { get; private set; }
         public string? RejectReason { get; private set; }
 
-        public FileContent _applicationFile;
-        public FileContent _articleFile;
+        public FileContent? ApplicationFile { get; private set; }
+        public FileContent? ArticleFile { get; private set; }
 
         public Participant() { }
 
@@ -72,7 +72,7 @@ namespace ConferenceApp.Domain.Entities
             if (!file.IsPdf && !file.IsWord)
                 throw new ArgumentException("Application file must be PDF or Word document");
 
-            _applicationFile = file;
+            ApplicationFile = file;
         }
 
         public void UploadArticleFile(FileContent file)
@@ -80,7 +80,7 @@ namespace ConferenceApp.Domain.Entities
             if (!file.IsPdf && !file.IsWord)
                 throw new ArgumentException("Article file must be PDF or Word document");
 
-            _articleFile = file;
+            ArticleFile = file;
         }
 
         public void Approve()
@@ -108,14 +108,14 @@ namespace ConferenceApp.Domain.Entities
             RejectReason = null;
         }
 
-        public bool HasApplicationFile => _applicationFile != null;
-        public bool HasArticleFile => _articleFile != null;
+        public bool HasApplicationFile => ApplicationFile != null;
+        public bool HasArticleFile => ArticleFile != null;
 
-        public FileContent? GetApplicationFile() => _applicationFile;
-        public FileContent? GetArticleFile() => _articleFile;
+        public FileContent? GetApplicationFile() => ApplicationFile;
+        public FileContent? GetArticleFile() => ArticleFile;
 
-        public void RemoveApplicationFile() => _applicationFile = null;
-        public void RemoveArticleFile() => _articleFile = null;
+        public void RemoveApplicationFile() => ApplicationFile = null;
+        public void RemoveArticleFile() => ArticleFile = null;
 
         public bool CanBeApproved => HasApplicationFile && string.IsNullOrEmpty(RejectReason);
         public bool IsInPendingState => IsApproved == null;
