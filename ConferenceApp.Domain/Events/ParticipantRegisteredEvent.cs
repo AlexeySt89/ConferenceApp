@@ -1,5 +1,4 @@
 ﻿using ConferenceApp.Domain.Common;
-using ConferenceApp.Domain.Entities;
 
 namespace ConferenceApp.Domain.Events
 {

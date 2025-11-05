@@ -1,12 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ConferenceApp.Domain.Interfaces.Services;
 
 namespace ConferenceApp.Infrastructure.Services
 {
-    internal class FileStorageService
+    public class FileStorageService : IFileStorageService
     {
+        public Task<bool> DeleteFileAsync(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Stream> DownloadFileAsync(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

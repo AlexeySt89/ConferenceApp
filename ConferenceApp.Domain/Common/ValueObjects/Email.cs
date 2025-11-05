@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ConferenceApp.Domain.Common.ValueObjects
+﻿namespace ConferenceApp.Domain.Common.ValueObjects
 {
     public record class Email
     {
         public string Value { get; }
+
+        private Email() { }
 
         public Email(string value)
         {

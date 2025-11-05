@@ -25,8 +25,13 @@ namespace ConferenceApp.Infrastructure.Services
                 new Claim(ClaimTypes.NameIdentifier, userId),
                 new Claim(ClaimTypes.Role, role) 
             };
+            var keyString = _configuration["Jwt:Key"];
+            if (string.IsNullOrEmpty(keyString) || keyString.Length < 32)
+            {
+                throw new ArgumentException("JWT Key must be at least 32 characters long");
+            }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

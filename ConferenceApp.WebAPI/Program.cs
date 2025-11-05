@@ -1,11 +1,9 @@
-using ConferenceApp.Application.Interfaces;
-using ConferenceApp.Application.Services;
-using ConferenceApp.Domain.Interfaces;
+using ConferenceApp.Application.Common;
 using ConferenceApp.Infrastructure;
-using ConferenceApp.Infrastructure.Repositories;
+using ConferenceApp.WebAPI.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace ConferenceApp.WebAPI
@@ -16,15 +14,14 @@ namespace ConferenceApp.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // 1. CORS должен быть ПЕРВЫМ!
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowLocalAndNull", policy =>
                 {
                     policy.WithOrigins(
-                            "https://conferenceapp.somee.com",
+                            //"https://conferenceapp.somee.com",
                             "http://localhost:7092",
-                            "null"  // Для локальных файлов
+                            "null"
                           )
                           .AllowAnyHeader()
                           .AllowAnyMethod()
@@ -32,21 +29,40 @@ namespace ConferenceApp.WebAPI
                 });
             });
 
-                // 2. Остальные сервисы
             builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddEndpointsApiExplorer(); 
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Conference API", Version = "v1" });
 
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlite("Data Source=conference.db"));
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
 
-            builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
-            builder.Services.AddScoped<ParticipantService>();
-            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-            builder.Services.AddScoped<IAdminService, AdminService>();
-            builder.Services.AddScoped<JwtService>();
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+            });
 
-            // 3. Аутентификация (для теста можно закомментировать)
+            builder.Services.AddApplication();
+            builder.Services.AddInfrastructure(builder.Configuration);
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -58,8 +74,7 @@ namespace ConferenceApp.WebAPI
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = builder.Configuration["Jwt:Issuer"],
                         ValidAudience = builder.Configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                     };
                 });
 
@@ -71,7 +86,6 @@ namespace ConferenceApp.WebAPI
 
             var app = builder.Build();
 
-            // 4. Middleware pipeline (КРИТИЧЕСКИ ВАЖЕН ПОРЯДОК!)
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -79,13 +93,26 @@ namespace ConferenceApp.WebAPI
             }
 
             app.UseRouting();
-
-            // 5. CORS должен быть здесь
             app.UseCors("AllowLocalAndNull");
 
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
+            /*app.Use(async (context, next) =>
+            {
+                if (context.User.Identity?.IsAuthenticated == true)
+                {
+                    Console.WriteLine($"User authenticated: {context.User.Identity.Name}");
+                    Console.WriteLine($"Roles: {string.Join(", ", context.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value))}");
+                }
+                else
+                {
+                    Console.WriteLine("User NOT authenticated");
+                }
+
+                await next();
+            });*/
 
             app.MapControllers();
 

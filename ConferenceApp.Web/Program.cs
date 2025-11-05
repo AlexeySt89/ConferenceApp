@@ -1,8 +1,8 @@
-using ConferenceApp.Domain.Interfaces;
 using ConferenceApp.Application.Interfaces;
 using ConferenceApp.Application.Services;
 using ConferenceApp.Web.Services;
 using ConferenceApp.Infrastructure.Repositories;
+using ConferenceApp.Domain.Interfaces.Repositories;
 
 namespace ConferenceApp.Web
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 using ConferenceApp.Application.Interfaces;
-using ConferenceApp.Application.DTOs;
+using ConferenceApp.Application.Participants.Queries.GetParticipants;
 
 namespace ConferenceApp.Web.Views.Participants
 {

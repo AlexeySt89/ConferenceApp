@@ -1,5 +1,4 @@
-﻿using ConferenceApp.Domain.Interfaces;
-using System.Collections.Generic;
+﻿using ConferenceApp.Domain.Interfaces.Services;
 
 namespace ConferenceApp.Domain.Common.ValueObjects
 {
@@ -7,6 +6,8 @@ namespace ConferenceApp.Domain.Common.ValueObjects
     {
         public string Hash { get; }
         public bool IsHashed { get; }
+
+        private Password() { }
 
         private Password(string hash, bool isHashed)
         {
@@ -26,7 +27,7 @@ namespace ConferenceApp.Domain.Common.ValueObjects
         public static Password CreateFromHash(string hash) => new(hash, true);
 
         public bool Verify(string plainPassword, IPasswordHasher hasher)
-            => IsHashed && hasher.VerifyPassword(plainPassword, Hash);
+            => hasher.VerifyPassword(plainPassword, Hash);// && IsHashed
 
         public override string ToString() => "[PROTECTED]";
     }

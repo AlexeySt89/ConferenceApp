@@ -3,11 +3,6 @@ using ConferenceApp.Application.Common.Exceptions;
 using ConferenceApp.Domain.Entities;
 using ConferenceApp.Domain.Interfaces.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConferenceApp.Application.Conferences.Queries.GetConferenceById
 {

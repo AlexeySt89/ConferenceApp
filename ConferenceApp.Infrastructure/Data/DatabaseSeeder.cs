@@ -20,8 +20,8 @@ namespace ConferenceApp.Infrastructure.Data
             if (!context.Conferences.Any())
             {
                 var conference = new Conference(
-                    "International Tech Conference 2024",
-                    "Annual technology conference featuring the latest innovations",
+                    "Международная конференция УУНИТ 2024",
+                    "Ежегодная технологическая конференция, представляющая новейшие инновации",
                     DateTime.UtcNow.AddMonths(1));
 
                 await context.Conferences.AddAsync(conference);
@@ -31,8 +31,8 @@ namespace ConferenceApp.Infrastructure.Data
             {
                 var orgMembers = new[]
                 {
-                    new ParOrgComm("John Smith", "Professor", "University of Technology", "Chair"),
-                    new ParOrgComm("Maria Garcia", "Director", "Tech Innovations Inc", "Coordinator")
+                    new ParOrgComm("Петр Иванов", "Профессор", "Технологический университет", "Кафедра"),
+                    new ParOrgComm("Клавдия Петрова", "Директор", "Технологические инновации", "Координатор")
                 };
 
                 await context.ParOrgComms.AddRangeAsync(orgMembers);
@@ -42,8 +42,8 @@ namespace ConferenceApp.Infrastructure.Data
             {
                 var programMembers = new[]
                 {
-                    new ParProgramComm("Dr. Robert Chen", "Researcher", "AI Research Lab", "Reviewer"),
-                    new ParProgramComm("Dr. Sarah Johnson", "Senior Scientist", "Data Science Institute", "Chair")
+                    new ParProgramComm("Сергей Викторов", "Исследователь", "Исследовательская лаборатория ИИ", "Рецензент"),
+                    new ParProgramComm("Мария Михайлова", "Старший научный сотрудник", "Институт науки о данных", "Председатель")
                 };
 
                 await context.ParProgramComms.AddRangeAsync(programMembers);

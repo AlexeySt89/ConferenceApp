@@ -1,5 +1,6 @@
 ﻿using ConferenceApp.Domain.Interfaces.Repositories;
 using ConferenceApp.Domain.Interfaces.Services;
+using ConferenceApp.Infrastructure.Data;
 using ConferenceApp.Infrastructure.Repositories;
 using ConferenceApp.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,8 @@ namespace ConferenceApp.Infrastructure
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
 
             return services;
         }

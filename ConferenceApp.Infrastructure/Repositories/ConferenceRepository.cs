@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ConferenceApp.Domain.Entities;
 using ConferenceApp.Domain.Interfaces.Repositories;
+using ConferenceApp.Infrastructure.Data;
 
 namespace ConferenceApp.Infrastructure.Repositories
 {

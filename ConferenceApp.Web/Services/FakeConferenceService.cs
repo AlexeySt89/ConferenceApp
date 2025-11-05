@@ -1,4 +1,4 @@
-﻿using ConferenceApp.Application.DTOs;
+﻿using ConferenceApp.Application.Conferences.Queries.GetConferences;
 using ConferenceApp.Application.Interfaces;
 
 namespace ConferenceApp.Web.Services

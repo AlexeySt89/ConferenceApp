@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ConferenceApp.Domain.Common.ValueObjects
+﻿namespace ConferenceApp.Domain.Common.ValueObjects
 {
     public record class FileContent
     {
@@ -12,6 +6,8 @@ namespace ConferenceApp.Domain.Common.ValueObjects
         public string FileName { get; }
         public string ContentType { get; }
         public long Size => Content?.Length ?? 0;
+
+        private FileContent() { }
 
         public FileContent(byte[] content, string fileName, string contentType)
         {

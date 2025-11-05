@@ -1,364 +1,162 @@
-﻿using ConferenceApp.Application.DTOs;
-using ConferenceApp.Application.Services;
-using ConferenceApp.Domain.Entities;
+﻿using ConferenceApp.Application.Participants.Commands.CreateParticipant;
+using ConferenceApp.Application.Participants.Commands.UpdateParticipant;
+using ConferenceApp.Application.Participants.Queries.AuthenticateParticipant;
+using ConferenceApp.Application.Participants.Queries.GetParticipantByEmail;
+using ConferenceApp.WebAPI.DTOs.Requests;
+using ConferenceApp.WebAPI.DTOs.Responses;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
-[ApiController]
-[Route("api/[controller]")]
-public class AuthController : ControllerBase
+namespace ConferenceApp.WebAPI.Controllers
 {
-    private readonly ParticipantService _participantService;
-    private readonly JwtService _jwtService; 
 
-    public AuthController(
-        ParticipantService service,
-        JwtService jwtService) 
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : BaseController
     {
-        _participantService = service;
-        _jwtService = jwtService;
-    }
+        private readonly IMediator _mediator;
+        private readonly ILogger<AuthController> _logger;
 
-    [HttpPost("register")]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Register([FromForm] RegisterParticipantRequest request)
-    {
-        if (request.File == null || request.File.Length == 0)
-            return BadRequest("Файл не прикреплён.");
-
-        using var memoryStream = new MemoryStream();
-        await request.File.CopyToAsync(memoryStream);
-
-        var dto = new ParticipantDto
+        public AuthController(IMediator mediator, ILogger<AuthController> logger)
         {
-            FullName = request.FullName,
-            Organization = request.Organization,
-            TitleLecture = request.TitleLecture,
-            Email = request.Email,
-            Password = request.Password,
-            //ApplicationFile = memoryStream.ToArray(),
-            //ApplicationFileName = request.File.FileName,
-            IsApproved = null,
-            Role = "user",
-            Section = request.Section
-        };
-
-        var result = await _participantService.SubmitAsync(dto);
-        if (!result.Item1) 
-            return BadRequest("Такой email уже используется.");
-
-        var participant = await _participantService.GetParticipant(dto.Email);
-
-        var token = _jwtService.GenerateToken(
-        email: dto.Email,
-        userId: result.Item2,
-        role: participant?.Role ?? "user"
-    );
-
-        return Ok(new
-        {
-            Token = token,
-            UserId = result.Item2,
-            Message = "Участник зарегистрирован."
-        });
-    }
-
-    public class LoginRequest
-    {
-        public required string Email { get; set; }
-        public required string Password { get; set; }
-    }
-
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
-    {
-        var isValid = await _participantService.AuthenticateAsync(loginRequest.Email, loginRequest.Password);
-        if (isValid.Item1 == string.Empty)
-            return Unauthorized("Invalid credentials");
-
-        // Получаем участника для получения роли
-        var participant = await _participantService.GetParticipant(isValid.Item1);
-
-        var token = _jwtService.GenerateToken(
-            email: isValid.Item1,
-            userId: isValid.Item2,
-            role: participant?.Role ?? "user" // Передаем роль в генератор токена
-        );
-
-        return Ok(new
-        {
-            Token = token,
-            UserId = isValid.Item2,
-            Email = isValid.Item1,
-            Role = participant?.Role // Возвращаем роль в ответе
-        });
-    }
-
-    [Authorize]
-    [HttpGet("profile")]
-    public async Task<IActionResult> GetProfile()
-    {
-        var userEmailString = User.FindFirst(ClaimTypes.Email)?.Value;
-
-        if (userEmailString == null)
-        {
-            return Unauthorized("Некорректный идентификатор пользователя");
+            _mediator = mediator;
+            _logger = logger;
         }
 
-        var participant = await _participantService.GetParticipant(userEmailString);
-
-        if (participant == null)
+        [HttpPost("register")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Register([FromForm] RegisterParticipantRequest request)
         {
-            return NotFound("Пользователь не найден");
+            try
+            {
+                var command = new CreateParticipantCommand
+                {
+                    FullName = request.FullName,
+                    Organization = request.Organization,
+                    TitleLecture = request.TitleLecture,
+                    Email = request.Email,
+                    Password = request.Password,
+                    Section = request.Section
+                };
+
+                var participantId = await _mediator.Send(command);
+
+                var authQuery = new AuthenticateParticipantQuery
+                {
+                    Email = request.Email,
+                    Password = request.Password
+                };
+
+                var authResult = await _mediator.Send(authQuery);
+
+                if (!authResult.Success)
+                    return BadRequest("Authentication error after registration");
+
+                return Ok(new
+                {
+                    Token = authResult.Token,
+                    UserId = authResult.UserId,
+                    Email = authResult.Email,
+                    Role = authResult.Role,
+                    Message = "The participant has been registered"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during registration for {Email}", request.Email);
+                return StatusCode(500, "An error occurred while registering");
+            }
         }
 
-        var profileDto = new ParticipantDto
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromForm] LoginRequest loginRequest)
         {
-            FullName = participant.FullName,
-            Organization = participant.Organization,
-            Email = participant.Email,
-            TitleLecture = participant.TitleLecture,
-            ApplicationFileName = participant.ArticleFileName,
-            IsApproved = participant.IsApproved,
-            Role = participant.Role 
-        };
+            try
+            {
+                var query = new AuthenticateParticipantQuery
+                {
+                    Email = loginRequest.Email,
+                    Password = loginRequest.Password
+                };
 
-        return Ok(profileDto);
-    }
-    /*[Authorize]
-    [HttpPut("profile")]
-    public async Task<IActionResult> UpdateProfile([FromBody] ParticipantDto updateDto)
-    {
-        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                var result = await _mediator.Send(query);
 
-        if (email == null)
-        {
-            return Unauthorized("Некорректный идентификатор пользователя");
+                if (!result.Success)
+                    return Unauthorized("Invalid credentials");
+
+                return Ok(new
+                {
+                    Token = result.Token,
+                    UserId = result.UserId,
+                    Email = result.Email,
+                    Role = result.Role
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Critical error during login for {Email}", loginRequest.Email);
+                return StatusCode(500, "Internal server error");
+            }
         }
 
-        var updatedParticipant = await _participantService.EditAsync(email, updateDto);
-
-        if (updatedParticipant == null)
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetProfile()
         {
-            return NotFound("Пользователь не найден");
+            try
+            {
+                var email = GetCurrentUserEmail();
+                var query = new GetParticipantByEmailQuery { Email = email };
+                var participant = await _mediator.Send(query);
+
+                var response = new ProfileResponse
+                {
+                    Id = participant.Id,
+                    FullName = participant.FullName,
+                    Organization = participant.Organization,
+                    Email = participant.Email,
+                    TitleLecture = participant.TitleLecture,
+                    Section = participant.Section,
+                    IsApproved = participant.IsApproved,
+                    HasApplicationFile = participant.HasApplicationFile,
+                    HasArticleFile = participant.HasArticleFile
+                };
+
+                return Ok(new { Data = response, Message = "Profile retrieved successfully" });
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex, _logger, "get profile");
+            }
         }
 
-        var resultDto = new ParticipantDto
+        [HttpPut("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateParticipantRequest request)
         {
-            FullName = updatedParticipant.FullName,
-            Organization = updatedParticipant.Organization,
-            Email = updatedParticipant.Email,
-            TitleLecture = updatedParticipant.TitleLecture,
-            ApplicationFileName = updatedParticipant.ArticleFileName
-        };
+            try
+            {
+                var email = GetCurrentUserEmail();
+                var getParticipantQuery = new GetParticipantByEmailQuery { Email = email };
+                var participant = await _mediator.Send(getParticipantQuery);
 
-        return Ok(resultDto);
-    }*/
-    [Authorize]
-    [HttpPut("profile")]
-    [Consumes("application/json")] // Изменили на JSON
-    public async Task<IActionResult> UpdateProfile([FromBody] UpdateParticipantRequest request)
-    {
-        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                var command = new UpdateParticipantCommand
+                {
+                    Id = participant.Id,
+                    FullName = request.FullName,
+                    Organization = request.Organization,
+                    TitleLecture = request.TitleLecture,
+                    Section = request.Section
+                };
 
-        if (email == null)
-        {
-            return Unauthorized("Некорректный идентификатор пользователя");
+                await _mediator.Send(command);
+                return Ok(new { Message = "Profile updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex, _logger, "update profile");
+            }
         }
-
-        var dto = new ParticipantDto
-        {
-            FullName = request.FullName,
-            Organization = request.Organization,
-            TitleLecture = request.TitleLecture,
-        };
-
-        var updatedParticipant = await _participantService.EditAsync(email, dto);
-
-        if (updatedParticipant == null)
-        {
-            return NotFound("Пользователь не найден");
-        }
-
-        return Ok(new
-        {
-            updatedParticipant.FullName,
-            updatedParticipant.Email,
-            updatedParticipant.Organization,
-            updatedParticipant.TitleLecture
-        });
-    }
-    /*[Authorize]
-    [HttpPut("profile")]
-    [Consumes("multipart/form-data")]
-    [ApiExplorerSettings(IgnoreApi = true)]
-    public async Task<IActionResult> UpdateProfile([FromForm] UpdateParticipantRequest request)
-    {
-        var email = User.FindFirst(ClaimTypes.Email)?.Value;
-
-        if (email == null)
-        {
-            return Unauthorized("Некорректный идентификатор пользователя");
-        }
-
-        byte[]? fileContent = null;
-        string? fileName = null;
-
-        if (request.File != null && request.File.Length > 0)
-        {
-            using var memoryStream = new MemoryStream();
-            await request.File.CopyToAsync(memoryStream);
-            fileContent = memoryStream.ToArray();
-            fileName = request.File.FileName;
-        }
-
-        var dto = new ParticipantDto
-        {
-            FullName = request.FullName,
-            Organization = request.Organization,
-            TitleLecture = request.TitleLecture,
-            Email = email
-        };
-
-        var updatedParticipant = await _participantService.EditAsync(email, dto);
-
-        if (updatedParticipant == null)
-        {
-            return NotFound("Пользователь не найден");
-        }
-
-        var resultDto = new ParticipantDto
-        {
-            FullName = updatedParticipant.FullName,
-            Organization = updatedParticipant.Organization,
-            Email = updatedParticipant.Email,
-            TitleLecture = updatedParticipant.TitleLecture,
-            ApplicationFileName = updatedParticipant.ArticleFileName
-        };
-
-        return Ok(resultDto);
-    }*/
-
-    [HttpGet("applications/approved")]
-    public async Task<IActionResult> GetApprovedApplications()
-    {
-        // Возвращает только подтвержденные заявки (isApproved = true)
-        var applications = await _participantService.GetApprovedPar();
-        if (applications == null)
-            return NotFound();
-        return Ok(applications);
-    }
-
-    #region Submit Material
-    [Authorize]
-    [HttpPost("submit-application")]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> SubmitApplication([FromForm] SubmitApplicationRequest request)
-    {
-        var email = User.FindFirst(ClaimTypes.Email)?.Value;
-        if (email == null)
-            return Unauthorized("Некорректный идентификатор пользователя");
-
-        if (request.ApplicationFile == null || request.ApplicationFile.Length == 0)
-            return BadRequest("Файл заявки не прикреплён.");
-
-        using var memoryStream = new MemoryStream();
-        await request.ApplicationFile.CopyToAsync(memoryStream);
-
-        var result = await _participantService.SubmitApplicationAsync(email, new ParticipantDto
-        {
-            ApplicationFile = memoryStream.ToArray(),
-            ApplicationFileName = request.ApplicationFile.FileName
-        });
-
-        if (!result)
-            return BadRequest("Не удалось сохранить заявку");
-
-        return Ok("Файл заявки успешно сохранён");
-    }
-
-    [Authorize]
-    [HttpPost("submit-article")]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> SubmitArticle([FromForm] SubmitArticleRequest request)
-    {
-        var email = User.FindFirst(ClaimTypes.Email)?.Value;
-        if (email == null)
-            return Unauthorized("Некорректный идентификатор пользователя");
-
-        if (request.ArticleFile == null || request.ArticleFile.Length == 0)
-            return BadRequest("Файл статьи не прикреплён.");
-
-        using var memoryStream = new MemoryStream();
-        await request.ArticleFile.CopyToAsync(memoryStream);
-
-        var result = await _participantService.SubmitArticleAsync(email, new ParticipantDto
-        {
-            ArticleFile = memoryStream.ToArray(),
-            ArticleFileName = request.ArticleFile.FileName
-        });
-
-        if (!result)
-            return BadRequest("Не удалось сохранить статью");
-
-        return Ok("Файл статьи успешно сохранён");
-    }
-
-    [Authorize]
-    [HttpPost("submitmaterials")]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> SubmitMaterials([FromForm] SubmitMaterialsRequest request)
-    {
-        var email = User.FindFirst(ClaimTypes.Email)?.Value;
-        if (email == null)
-            return Unauthorized("Некорректный идентификатор пользователя");
-
-        if (request.ArticleFile == null || request.ArticleFile.Length == 0)
-            return BadRequest("Файл статьи не прикреплён.");
-
-        if (request.ApplicationFile == null || request.ApplicationFile.Length == 0)
-            return BadRequest("Файл заявки не прикреплён.");
-
-        using var articleStream = new MemoryStream();
-        using var applicationStream = new MemoryStream();
-
-        await request.ArticleFile.CopyToAsync(articleStream);
-        await request.ApplicationFile.CopyToAsync(applicationStream);
-
-        var result = await _participantService.SubmitMaterialsAsync(email, new ParticipantDto
-        {
-            ArticleFile = articleStream.ToArray(),
-            ArticleFileName = request.ArticleFile.FileName,
-            ApplicationFile = applicationStream.ToArray(),
-            ApplicationFileName = request.ApplicationFile.FileName
-            
-        });
-
-        if (!result)
-            return BadRequest("Не удалось сохранить материалы");
-
-        return Ok("Материалы успешно сохранены");
-    }
-    #endregion
-    public class SubmitApplicationRequest
-    {
-        public IFormFile ApplicationFile { get; set; }
-        public string ApplicationFileName { get; set; }
-
-    }
-
-    public class SubmitArticleRequest
-    {
-        public IFormFile ArticleFile { get; set; }
-        public string ArticleFileName { get; set; }
-    }
-
-    public class SubmitMaterialsRequest
-    {
-        public IFormFile ArticleFile { get; set; }
-        public string ArticleFileName { get; set; }
-        public IFormFile ApplicationFile { get; set; }
-        public string ApplicationFileName { get; set; }
     }
 }

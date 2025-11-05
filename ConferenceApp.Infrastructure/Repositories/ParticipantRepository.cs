@@ -1,6 +1,7 @@
 ﻿using ConferenceApp.Domain.Common.ValueObjects;
 using ConferenceApp.Domain.Entities;
 using ConferenceApp.Domain.Interfaces.Repositories;
+using ConferenceApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
